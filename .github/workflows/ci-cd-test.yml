@@ -55,8 +55,8 @@ jobs:
         password: ${{ secrets.WAS_PASSWORD }}
         port: ${{ secrets.WAS_SSH_PORT }}
         script: |
-          docker stop api-server
-          docker rm api-server
+          sudo docker stop $CONTAINER_NAME
+          sudo docker rm $CONTAINER_NAME
 
     - name: deploy step 2
       uses: appleboy/ssh-action@v0.1.6

@@ -43,8 +43,8 @@ jobs:
       
     - name: docker build and push
       run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }}:$APP_VERSION .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_REPO }}:$APP_VERSION
 
     - name: deploy step 1

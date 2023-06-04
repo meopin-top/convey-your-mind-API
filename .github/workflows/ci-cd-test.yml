@@ -39,7 +39,7 @@ jobs:
     - name: Build with Gradle
       run: |
         chmod +x ./gradlew
-        ./gradlew build --exclude-task test
+        ./gradlew build
       
     - name: docker build and push
       run: |

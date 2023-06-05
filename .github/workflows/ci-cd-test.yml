@@ -13,7 +13,6 @@ on:
 env:
   PREVIOUS_VERSION : 0.0.0
   APP_VERSION: 0.1.0
-  CONTAINER_NAME: api-server
 
 jobs:
   build:
@@ -55,8 +54,8 @@ jobs:
         password: ${{ secrets.WAS_PASSWORD }}
         port: ${{ secrets.WAS_SSH_PORT }}
         script: |
-          docker stop $CONTAINER_NAME
-          docker rm $CONTAINER_NAME
+          docker stop api-server
+          docker rm api-server
 
     - name: deploy step 2
       uses: appleboy/ssh-action@v0.1.6
@@ -65,9 +64,9 @@ jobs:
         username: ${{ secrets.WAS_USERNAME }}
         password: ${{ secrets.WAS_PASSWORD }}
         port: ${{ secrets.WAS_SSH_PORT }}
-        envs: CONTAINER_NAME, APP_VERSION
+        envs: APP_VERSION
         script: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker rmi image $(docker images -q --filter "reference=${{ secrets.DOCKER_REPO }}")
           docker pull ${{ secrets.DOCKER_REPO }}:$APP_VERSION
-          docker run -d -p 8080:8080 --name $CONTAINER_NAME ${{ secrets.DOCKER_REPO }}:$APP_VERSION
+          docker run -d -p 8080:8080 --name api-server ${{ secrets.DOCKER_REPO }}:$APP_VERSION

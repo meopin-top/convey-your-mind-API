@@ -9,13 +9,15 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.domain.Token;
 import muffintop.cym.api.domain.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
 public class JwtTokenManager {
 
-    private String secretKey = "secret";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     // 토큰 유효시간 60분, 1일
     private long accessTokenTime = 60 * 60 * 1000L;

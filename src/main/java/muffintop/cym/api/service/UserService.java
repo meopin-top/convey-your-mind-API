@@ -3,6 +3,7 @@ package muffintop.cym.api.service;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.controller.enums.ResponseCode;
+import muffintop.cym.api.controller.request.SignInRequest;
 import muffintop.cym.api.controller.request.SignUpRequest;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.domain.key.UserPk;
@@ -48,5 +49,21 @@ public class UserService {
 
         return ResponseCode.SIGN_UP_SUCCESS;
 
+    }
+
+    public ResponseCode signIn(SignInRequest request){
+        UserPk userPk = new UserPk(request.getUserId(),'D');
+        User user = getUserByUserPk(userPk);
+        if(user == null){
+            return ResponseCode.NON_EXIST_ID;
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseCode.INVALID_PASSWORD;
+        }
+        return ResponseCode.SIGN_IN_SUCCESS;
+    }
+
+    public User getUserByUserPk(UserPk userPk){
+        return userRepository.findUserByUserIdAndAuthMethod(userPk.getUserId(), userPk.getAuthMethod()).orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package muffintop.cym.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -34,14 +35,19 @@ public class User implements Serializable {
 
     private String nickName;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private String refreshToken;
 
+    @JsonIgnore
     private char status;
 
+    @JsonIgnore
     private LocalDateTime createdDatetime;
 
+    @JsonIgnore
     private LocalDateTime updatedDatetime;
 
 }

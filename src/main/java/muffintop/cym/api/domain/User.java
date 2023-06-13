@@ -33,6 +33,8 @@ public class User implements Serializable {
     @Id
     private char authMethod;
 
+    private String email;
+
     private String nickName;
 
     @JsonIgnore

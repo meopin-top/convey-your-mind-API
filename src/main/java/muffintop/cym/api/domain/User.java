@@ -20,7 +20,7 @@ import muffintop.cym.api.domain.key.UserPk;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode // 필수
+@EqualsAndHashCode // Multi Column PK에서 필수
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="USER")

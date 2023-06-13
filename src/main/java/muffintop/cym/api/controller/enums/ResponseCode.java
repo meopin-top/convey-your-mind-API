@@ -12,6 +12,7 @@ public enum ResponseCode {
     SIGN_UP_SUCCESS(1001,"회원가입이 완료되었습니다"),
     DUPLICATED_ID(1011,"중복된 ID 입니다."),
     INCORRECT_PASSWORD(1012,"패스워드가 일치하지 않습니다."),
+    INVALID_FORMAT_PASSWORD(1013,"패스워드의 형태가 유효하지 않습니다"),
 
     // 로그인
     SIGN_IN_SUCCESS(1101,"로그인이 완료되었습니다."),

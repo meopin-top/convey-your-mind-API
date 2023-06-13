@@ -1,12 +1,21 @@
 package muffintop.cym.api.service;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.controller.enums.ResponseCode;
 import muffintop.cym.api.controller.request.SignInRequest;
 import muffintop.cym.api.controller.request.SignUpRequest;
 import muffintop.cym.api.domain.User;
+import muffintop.cym.api.domain.enums.AuthMethod;
+import muffintop.cym.api.domain.enums.UserStatus;
 import muffintop.cym.api.domain.key.UserPk;
+import muffintop.cym.api.exception.DuplicatedIdException;
+import muffintop.cym.api.exception.IncorrectPasswordException;
+import muffintop.cym.api.exception.InvalidFormatPasswordException;
+import muffintop.cym.api.exception.InvalidPasswordException;
+import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,48 +28,72 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String PASSWORD_PATTERN =  "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$";
+
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+
     private boolean isValidUserName(UserPk userPk) {
         return !userRepository.existsById(userPk);
     }
 
-    private boolean isValidPassword(String password, String passwordCheck) {
+    private String makeNickname(){
+        return null;
+    }
+
+    private boolean isSamePassword(String password, String passwordCheck) {
         return password.equals(passwordCheck);
     }
 
-    @Transactional
-    public ResponseCode signUp(SignUpRequest request){
+    private boolean isValidPassword(String password){
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
 
-        UserPk userPk = new UserPk(request.getUserId(),'D');
+    @Transactional
+    public User signUp(SignUpRequest request){
+
+        //User PK 생성
+        UserPk userPk = new UserPk(request.getUserId(), AuthMethod.EMAIL.getValue());
+
+        //User 중복 확인
         if(!isValidUserName(userPk)){
-            return ResponseCode.DUPLICATED_ID;
+            throw new DuplicatedIdException();
         }
-        if(!isValidPassword(request.getPassword(), request.getPasswordCheck())){
-            return ResponseCode.INCORRECT_PASSWORD;
+        //패스워드 일치 여부 확인
+        if(!isSamePassword(request.getPassword(), request.getPasswordCheck())){
+            throw new IncorrectPasswordException();
+        }
+        //패스워드 포멧 확인
+        if(!isValidPassword(request.getPassword())){
+            throw new InvalidFormatPasswordException();
         }
 
         User newUser = User.builder()
             .userId(request.getUserId())
-            .nickName(request.getNickName())
-            .authMethod('D')
+            .email(request.getEmail())
+            .authMethod(AuthMethod.EMAIL.getValue())
+            .nickName("")
             .password(passwordEncoder.encode(request.getPassword()))
             .createdDatetime(LocalDateTime.now())
+            .status(UserStatus.UNAUTHORIZED.getValue())
             .build();
         userRepository.save(newUser);
 
-        return ResponseCode.SIGN_UP_SUCCESS;
+        return userRepository.save(newUser);
 
     }
 
-    public ResponseCode signIn(SignInRequest request){
-        UserPk userPk = new UserPk(request.getUserId(),'D');
+    public User signIn(SignInRequest request){
+        UserPk userPk = new UserPk(request.getUserId(),AuthMethod.EMAIL.getValue());
+        //해당 유저 찾기
         User user = getUserByUserPk(userPk);
         if(user == null){
-            return ResponseCode.NON_EXIST_ID;
+            throw new NonExistIdException();
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseCode.INVALID_PASSWORD;
+            throw new InvalidPasswordException();
         }
-        return ResponseCode.SIGN_IN_SUCCESS;
+        return user;
     }
 
     public User getUserByUserPk(UserPk userPk){

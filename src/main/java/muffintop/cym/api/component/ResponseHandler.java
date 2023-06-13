@@ -1,5 +1,6 @@
 package muffintop.cym.api.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import muffintop.cym.api.controller.enums.ResponseCode;
@@ -14,7 +15,7 @@ public class ResponseHandler {
         CommonResponse response = CommonResponse.builder()
             .code(responseCode.getCode())
             .message(responseCode.getMessage())
-            .data(data)
+            .data(data==null ? new ArrayList<>() : data)
             .build();
         return ResponseEntity
             .status(status)

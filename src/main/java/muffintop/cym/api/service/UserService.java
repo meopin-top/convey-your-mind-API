@@ -17,9 +17,12 @@ import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +30,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WebClient webClient;
 
     private static final String PASSWORD_PATTERN =  "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$";
+
 
     private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
@@ -37,7 +42,19 @@ public class UserService {
     }
 
     private String makeNickname(){
-        return null;
+
+        final String path = "/";
+        final String format = "text";
+        final String count = "1";
+
+        Mono<String> response = webClient.get().uri(uriBuilder ->
+            uriBuilder
+                .path(path)
+                .queryParam("format",format)
+                .queryParam("count",count)
+                .build()).retrieve().bodyToMono(String.class);
+
+        return response.block();
     }
 
     private boolean isSamePassword(String password, String passwordCheck) {
@@ -72,7 +89,7 @@ public class UserService {
             .userId(request.getUserId())
             .email(request.getEmail())
             .authMethod(AuthMethod.EMAIL.getValue())
-            .nickName("")
+            .nickName(makeNickname())
             .password(passwordEncoder.encode(request.getPassword()))
             .createdDatetime(LocalDateTime.now())
             .status(UserStatus.UNAUTHORIZED.getValue())

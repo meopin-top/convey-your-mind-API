@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request){
         User user = userService.signUp(request);
-        return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK,null);
+        return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK,null);
     }
 
     @PostMapping("/sign-in")

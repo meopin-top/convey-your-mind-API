@@ -31,6 +31,9 @@ jobs:
         distribution: 'temurin'
         
     - uses: actions/checkout@v3
+    - run: touch ./src/main/resources/gcs-dev.json
+    - run: echo "${{ secrets.CONFIG_GCS_DEV }}" > ./src/main/resources/gcs-dev.json
+    - run: cat ./src/main/resources/gcs-dev.json
     - run: touch ./src/main/resources/application-dev.yml
     - run: echo "${{ secrets.CONFIG_DEV }}" > ./src/main/resources/application-dev.yml
     - run: cat ./src/main/resources/application-dev.yml

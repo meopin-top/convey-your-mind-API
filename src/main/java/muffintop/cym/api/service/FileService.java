@@ -30,7 +30,8 @@ public class FileService {
     public String upload(MultipartFile image) throws IOException {
 
         try {
-            byte[] fileData = convertFileToByte(image);
+            File uploadFile = convertFile(image);
+            byte[] fileData = FileUtils.readFileToByteArray(uploadFile);
             String uuid = UUID.randomUUID().toString(); // Google Cloud Storage에 저장될 파일 이름
             String imgUrl = host + "/" + bucketName + "/" + uuid;
             String ext = image.getContentType();
@@ -39,6 +40,7 @@ public class FileService {
                     .setContentType(ext)
                     .build(),
                 fileData);
+            uploadFile.delete();
             return imgUrl;
         } catch (Exception e) {
             throw new FileUploadFailException();
@@ -58,14 +60,13 @@ public class FileService {
         }
     }
 
-    private byte[] convertFileToByte(MultipartFile file) throws IOException {
+    private File convertFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
-
         FileOutputStream outputStream = new FileOutputStream(convertedFile);
         outputStream.write(file.getBytes());
         outputStream.close();
 
-        return FileUtils.readFileToByteArray(convertedFile);
+        return convertedFile;
     }
 
 }

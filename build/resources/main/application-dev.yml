@@ -10,8 +10,9 @@ spring:
     gcp:
       storage:
         credentials:
-          location: classpath:convey-heart-506379d7be64.json
+          location: classpath:gcs-dev.json
         project-id: convey-heart
+        url: https://storage.googleapis.com
         bucket: convey-your-mind-dev-bucket
 
 jwt:

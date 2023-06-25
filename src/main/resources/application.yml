@@ -1,0 +1,7 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+nickname:
+  host: https://nickname.hwanmoo.kr

@@ -5,7 +5,7 @@ public enum UserStatus {
     UNAUTHORIZED('U'),
     EXPIRED('E');
 
-    public char getValue(){
+    public char getValue() {
         return value;
     }
 

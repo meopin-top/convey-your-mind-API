@@ -12,8 +12,8 @@ public class WebClientConfiguration {
     @Value("${nickname.host}")
     private String host;
 
-    @Bean(name="nicknameClient")
-    public WebClient nicknameWebClient(){
+    @Bean(name = "nicknameClient")
+    public WebClient nicknameWebClient() {
         return WebClient.builder().baseUrl(host).build();
     }
 

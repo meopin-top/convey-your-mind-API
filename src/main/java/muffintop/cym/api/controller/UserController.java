@@ -28,21 +28,21 @@ public class UserController {
     private final JwtTokenManager tokenManager;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request){
+    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request) {
         User user = userService.signUp(request);
-        return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK,null);
+        return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, null);
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<CommonResponse> signIn(@RequestBody SignInRequest request,
-        HttpServletResponse response){
+        HttpServletResponse response) {
         User user = userService.signIn(request);
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
         Cookie refreshTokenCookie = new Cookie("RefreshToken", token.getRefreshToken());
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
-        return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK,user);
+        return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
     }
 
 }

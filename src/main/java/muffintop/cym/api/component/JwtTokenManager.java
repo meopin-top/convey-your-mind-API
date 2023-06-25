@@ -32,7 +32,7 @@ public class JwtTokenManager {
     public String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject("User");
         claims.put("userId", user.getUserId());
-        claims.put("authMethod",user.getAuthMethod());
+        claims.put("authMethod", user.getAuthMethod());
         Date now = new Date();
         return Jwts.builder()
             .setClaims(claims)
@@ -52,7 +52,7 @@ public class JwtTokenManager {
             .compact();
     }
 
-    public Token generateNewToken(User user){
+    public Token generateNewToken(User user) {
         return Token.builder()
             .accessToken(createAccessToken(user))
             .refreshToken(createRefreshToken())

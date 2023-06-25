@@ -4,7 +4,7 @@ public enum AuthMethod {
     EMAIL('E'),
     KAKAO('K');
 
-    public char getValue(){
+    public char getValue() {
         return value;
     }
 

@@ -9,7 +9,6 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,7 @@ import muffintop.cym.api.domain.key.UserPk;
 @EqualsAndHashCode // Multi Column PK에서 필수
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="USER")
+@Table(name = "USER")
 @IdClass(UserPk.class)
 public class User implements Serializable {
 

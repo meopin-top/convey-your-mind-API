@@ -12,6 +12,8 @@ import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NoFileException;
 import muffintop.cym.api.exception.NonExistIdException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ResponseExceptionController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResponseExceptionController.class);
 
     @ExceptionHandler(value = {DuplicatedIdException.class})
     protected ResponseEntity<CommonResponse> handleDuplicatedIdException() {
@@ -67,6 +71,11 @@ public class ResponseExceptionController {
     @ExceptionHandler(value = {NoFileException.class})
     protected ResponseEntity<CommonResponse> handleNoFileException() {
         return ResponseHandler.generateResponse(ResponseCode.FILE_DELETE_FAIL, HttpStatus.OK, null);
+    }
+
+    @ExceptionHandler(value ={Exception.class})
+    protected void handleException(Exception e) {
+        LOGGER.error(e.toString());
     }
 
 }

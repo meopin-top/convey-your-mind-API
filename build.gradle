@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.9'
 	implementation 'com.sksamuel.scrimage:scrimage-core:4.0.37'
 	implementation 'com.sksamuel.scrimage:scrimage-webp:4.0.37'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'

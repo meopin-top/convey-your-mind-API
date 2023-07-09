@@ -1,5 +1,6 @@
 package muffintop.cym.api.controller;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import muffintop.cym.api.controller.request.SignUpRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.domain.Token;
 import muffintop.cym.api.domain.User;
+import muffintop.cym.api.service.EmailService;
 import muffintop.cym.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,15 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenManager tokenManager;
+    private final EmailService emailService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request) {
+    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request)
+        throws MessagingException {
         User user = userService.signUp(request);
+        if(user.getEmail()!=null){
+            emailService.sendMail(user.getEmail());
+        }
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, null);
     }
 

@@ -3,15 +3,17 @@ package muffintop.cym.api.service;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.sksamuel.scrimage.ImmutableImage;
+import com.sksamuel.scrimage.webp.WebpWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.exception.FileUploadFailException;
 import muffintop.cym.api.exception.NoFileException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,24 +29,36 @@ public class FileService {
 
     private final Storage storage;
 
-    public String upload(MultipartFile image) throws IOException {
-
+    @Async
+    public void upload(MultipartFile image, String uuid) {
         try {
             File uploadFile = convertFile(image);
-            byte[] fileData = FileUtils.readFileToByteArray(uploadFile);
-            String uuid = UUID.randomUUID().toString(); // Google Cloud Storage에 저장될 파일 이름
-            String imgUrl = host + "/" + bucketName + "/" + uuid;
-            String ext = image.getContentType();
-            BlobInfo blobInfo = storage.create(
-                BlobInfo.newBuilder(bucketName, uuid)
-                    .setContentType(ext)
-                    .build(),
-                fileData);
+            File webpFile = covertToWebp(uploadFile);
+            byte[] fileData = FileUtils.readFileToByteArray(webpFile);
+            uploadToStorage(uuid, fileData);
             uploadFile.delete();
-            return imgUrl;
+            webpFile.delete();
         } catch (Exception e) {
             throw new FileUploadFailException();
         }
+    }
+
+    private File covertToWebp(File target) throws IOException {
+        ImmutableImage immutableImage = ImmutableImage.loader().fromFile(target);
+        return immutableImage.output(WebpWriter.MAX_LOSSLESS_COMPRESSION, new File("temp.webp"));
+    }
+
+    private void uploadToStorage(String uuid, byte[] fileData) {
+        BlobInfo blobInfo = storage.create(
+            BlobInfo.newBuilder(bucketName, uuid)
+                .setContentType("webp")
+                .build(),
+            fileData);
+    }
+
+    public String makeUrl(String uuid) {
+        String imgUrl = host + "/" + bucketName + "/" + uuid;
+        return imgUrl;
     }
 
     public void delete(String objectName) {

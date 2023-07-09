@@ -2,6 +2,7 @@ package muffintop.cym.api.controller;
 
 
 import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.component.ResponseHandler;
 import muffintop.cym.api.controller.enums.ResponseCode;
@@ -31,15 +32,19 @@ public class FileController {
     @PostMapping("")
     public ResponseEntity<CommonResponse> upload(@RequestParam(value = "image") MultipartFile image)
         throws IOException {
-        LOGGER.info("/api/files request");
-        return ResponseHandler.generateResponse(ResponseCode.FILE_UPLOAD_SUCCESS, HttpStatus.OK,fileService.upload(image));
+        String uuid = UUID.randomUUID().toString();
+        String url = fileService.makeUrl(uuid);
+        fileService.upload(image, uuid);
+        return ResponseHandler.generateResponse(ResponseCode.FILE_UPLOAD_SUCCESS, HttpStatus.OK,
+            url);
     }
 
     @DeleteMapping("/{objectName}")
     public ResponseEntity<CommonResponse> upload(@PathVariable String objectName)
         throws IOException {
         fileService.delete(objectName);
-        return ResponseHandler.generateResponse(ResponseCode.FILE_DELETE_SUCCESS, HttpStatus.OK,null);
+        return ResponseHandler.generateResponse(ResponseCode.FILE_DELETE_SUCCESS, HttpStatus.OK,
+            null);
     }
 
 }

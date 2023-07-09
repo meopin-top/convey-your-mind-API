@@ -36,6 +36,8 @@ public class User implements Serializable {
 
     private String nickName;
 
+    private String profile;
+
     @JsonIgnore
     private String password;
 

@@ -6,6 +6,8 @@ import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.exception.DuplicatedIdException;
 import muffintop.cym.api.exception.FileUploadFailException;
 import muffintop.cym.api.exception.IncorrectPasswordException;
+import muffintop.cym.api.exception.InvalidFormatEmailException;
+import muffintop.cym.api.exception.InvalidFormatIdException;
 import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NoFileException;
@@ -32,6 +34,18 @@ public class ResponseExceptionController {
     @ExceptionHandler(value = {InvalidFormatPasswordException.class})
     protected ResponseEntity<CommonResponse> handleInvalidFormatPasswordException() {
         return ResponseHandler.generateResponse(ResponseCode.INVALID_FORMAT_PASSWORD, HttpStatus.OK,
+            null);
+    }
+
+    @ExceptionHandler(value = {InvalidFormatIdException.class})
+    protected ResponseEntity<CommonResponse> handleInvalidFormatIdException() {
+        return ResponseHandler.generateResponse(ResponseCode.INVALID_FORMAT_ID, HttpStatus.OK,
+            null);
+    }
+
+    @ExceptionHandler(value = {InvalidFormatEmailException.class})
+    protected ResponseEntity<CommonResponse> handleInvalidFormatEmailException() {
+        return ResponseHandler.generateResponse(ResponseCode.INVALID_FORMAT_EMAIL, HttpStatus.OK,
             null);
     }
 

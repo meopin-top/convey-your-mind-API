@@ -29,7 +29,6 @@ public class FileService {
 
     private final Storage storage;
 
-    @Async
     public void upload(MultipartFile image, String uuid) {
         try {
             File uploadFile = convertFile(image);

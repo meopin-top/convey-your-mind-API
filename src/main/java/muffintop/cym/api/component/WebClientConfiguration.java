@@ -9,12 +9,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfiguration {
 
-    @Value("${nickname.host}")
-    private String host;
+    @Value("${host.nickname}")
+    private String nicknameHost;
 
     @Bean(name = "nicknameClient")
     public WebClient nicknameWebClient() {
-        return WebClient.builder().baseUrl(host).build();
+        return WebClient.builder().baseUrl(nicknameHost).build();
     }
 
 }

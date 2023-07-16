@@ -13,7 +13,6 @@ import muffintop.cym.api.exception.FileUploadFailException;
 import muffintop.cym.api.exception.NoFileException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -19,9 +19,8 @@ public class JwtTokenManager {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // 토큰 유효시간 60분, 1일
-    private long accessTokenTime = 60 * 60 * 1000L;
-    private long refreshTokenTime = 24 * 60 * 60 * 1000L;
+    // 토큰 유효시간 90일
+    private long accessTokenTime = 90 *24 * 60 * 60 * 1000L;
 
     @PostConstruct
     protected void init() {
@@ -42,20 +41,19 @@ public class JwtTokenManager {
             .compact();
     }
 
-    // JWT Refresh 토큰 생성
-    public String createRefreshToken() {
-        Date now = new Date();
-        return Jwts.builder()
-            .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime() + refreshTokenTime))
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
-    }
+//    // JWT Refresh 토큰 생성
+//    public String createRefreshToken() {
+//        Date now = new Date();
+//        return Jwts.builder()
+//            .setIssuedAt(now)
+//            .setExpiration(new Date(now.getTime() + refreshTokenTime))
+//            .signWith(SignatureAlgorithm.HS256, secretKey)
+//            .compact();
+//    }
 
     public Token generateNewToken(User user) {
         return Token.builder()
             .accessToken(createAccessToken(user))
-            .refreshToken(createRefreshToken())
             .build();
     }
 }

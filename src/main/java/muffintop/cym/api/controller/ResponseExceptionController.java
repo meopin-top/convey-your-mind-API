@@ -73,7 +73,7 @@ public class ResponseExceptionController {
         return ResponseHandler.generateResponse(ResponseCode.FILE_DELETE_FAIL, HttpStatus.OK, null);
     }
 
-    @ExceptionHandler(value ={Exception.class})
+    @ExceptionHandler(value = {Exception.class})
     protected void handleException(Exception e) {
         LOGGER.error(e.toString());
     }

@@ -18,6 +18,7 @@ import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.repository.UserRepository;
+import muffintop.cym.api.service.dto.kakao.KakaoUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,13 +48,13 @@ public class UserService {
 
 
     //여기 서버 내려감감
-   private String makeNickname() {
+    private String makeNickname() {
 
         final String path = "/";
         final String format = "text";
         final String count = "1";
 
-        try{
+        try {
             Mono<String> response = webClient.get().uri(uriBuilder ->
                 uriBuilder
                     .path(path)
@@ -62,7 +63,7 @@ public class UserService {
                     .build()).retrieve().bodyToMono(String.class);
 
             return response.block();
-        } catch (Exception e){
+        } catch (Exception e) {
             return "";
         }
     }
@@ -93,7 +94,7 @@ public class UserService {
         UserPk userPk = new UserPk(request.getUserId(), AuthMethod.EMAIL.getValue());
 
         //Id 포맷 확인
-        if(!isValidId(request.getUserId())){
+        if (!isValidId(request.getUserId())) {
             throw new InvalidFormatIdException();
         }
         //User 중복 확인
@@ -112,7 +113,7 @@ public class UserService {
         }
 
         //이메일 포맷 확인
-        if(request.getEmail()!=null&&!isValidEmail(request.getEmail())){
+        if (request.getEmail() != null && !isValidEmail(request.getEmail())) {
             throw new InvalidFormatEmailException();
         }
 
@@ -149,5 +150,32 @@ public class UserService {
     public User getUserByUserPk(UserPk userPk) {
         return userRepository.findUserByUserIdAndAuthMethod(userPk.getUserId(),
             userPk.getAuthMethod()).orElse(null);
+    }
+
+    public User signInWithKakao(KakaoUser kakaoUser){
+        User user =  userRepository.findUserByUserIdAndAuthMethod(kakaoUser.getId().toString(),
+            AuthMethod.KAKAO.getValue()).orElse(null);
+
+        //회원 가입 진행
+        if(user == null){
+            User newUser = User.builder()
+                .userId(kakaoUser.getId().toString())
+                .email(kakaoUser.getKakaoAccount().getEmail())
+                .authMethod(AuthMethod.KAKAO.getValue())
+                .nickName(kakaoUser.getKakaoAccount().getKakaoProfile().getNickname())
+                .profile(kakaoUser.getKakaoAccount().getKakaoProfile().getProfileImageUrl())
+                .password(passwordEncoder.encode(kakaoUser.getId().toString()))
+                .createdDatetime(LocalDateTime.now())
+                .status(UserStatus.UNAUTHORIZED.getValue())
+                .build();
+            user = newUser;
+        }
+        else{
+            //프로필하고 닉네임 업데이트
+            user.setProfile(kakaoUser.getKakaoAccount().getKakaoProfile().getProfileImageUrl());
+            user.setNickName(kakaoUser.getKakaoAccount().getKakaoProfile().getNickname());
+        }
+        userRepository.save(user);
+        return user;
     }
 }

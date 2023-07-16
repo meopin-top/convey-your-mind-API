@@ -20,7 +20,7 @@ public class JwtTokenManager {
     private String secretKey;
 
     // 토큰 유효시간 90일
-    private long accessTokenTime = 90 *24 * 60 * 60 * 1000L;
+    private long accessTokenTime = 90 * 24 * 60 * 60 * 1000L;
 
     @PostConstruct
     protected void init() {

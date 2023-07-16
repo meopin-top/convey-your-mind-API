@@ -19,6 +19,8 @@ import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.repository.UserRepository;
 import muffintop.cym.api.service.dto.kakao.KakaoUser;
+import muffintop.cym.api.service.dto.naver.NaverUser;
+import muffintop.cym.api.service.dto.naver.NaverUserInfo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -152,12 +154,12 @@ public class UserService {
             userPk.getAuthMethod()).orElse(null);
     }
 
-    public User signInWithKakao(KakaoUser kakaoUser){
-        User user =  userRepository.findUserByUserIdAndAuthMethod(kakaoUser.getId().toString(),
+    public User signInWithKakao(KakaoUser kakaoUser) {
+        User user = userRepository.findUserByUserIdAndAuthMethod(kakaoUser.getId().toString(),
             AuthMethod.KAKAO.getValue()).orElse(null);
 
         //회원 가입 진행
-        if(user == null){
+        if (user == null) {
             User newUser = User.builder()
                 .userId(kakaoUser.getId().toString())
                 .email(kakaoUser.getKakaoAccount().getEmail())
@@ -169,11 +171,37 @@ public class UserService {
                 .status(UserStatus.UNAUTHORIZED.getValue())
                 .build();
             user = newUser;
-        }
-        else{
+        } else {
             //프로필하고 닉네임 업데이트
             user.setProfile(kakaoUser.getKakaoAccount().getKakaoProfile().getProfileImageUrl());
             user.setNickName(kakaoUser.getKakaoAccount().getKakaoProfile().getNickname());
+        }
+        userRepository.save(user);
+        return user;
+    }
+
+    public User signInWithNaver(NaverUser naverUser) {
+        NaverUserInfo userInfo = naverUser.getResponse();
+        User user = userRepository.findUserByUserIdAndAuthMethod(userInfo.getId(),
+            AuthMethod.NAVER.getValue()).orElse(null);
+
+        //회원 가입 진행
+        if (user == null) {
+            User newUser = User.builder()
+                .userId(userInfo.getId())
+                .email(userInfo.getEmail())
+                .authMethod(AuthMethod.NAVER.getValue())
+                .nickName(userInfo.getNickName())
+                .profile(userInfo.getProfileImage())
+                .password(passwordEncoder.encode(userInfo.getId()))
+                .createdDatetime(LocalDateTime.now())
+                .status(UserStatus.UNAUTHORIZED.getValue())
+                .build();
+            user = newUser;
+        } else {
+            //프로필하고 닉네임 업데이트
+            user.setProfile(userInfo.getProfileImage());
+            user.setNickName(userInfo.getNickName());
         }
         userRepository.save(user);
         return user;

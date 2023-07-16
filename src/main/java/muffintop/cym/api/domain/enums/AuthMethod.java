@@ -2,7 +2,8 @@ package muffintop.cym.api.domain.enums;
 
 public enum AuthMethod {
     EMAIL('E'),
-    KAKAO('K');
+    KAKAO('K'),
+    NAVER('N');
 
     public char getValue() {
         return value;

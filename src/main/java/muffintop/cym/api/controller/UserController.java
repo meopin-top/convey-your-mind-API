@@ -12,10 +12,13 @@ import muffintop.cym.api.controller.request.SignUpRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.domain.Token;
 import muffintop.cym.api.domain.User;
+import muffintop.cym.api.interceptor.Auth;
+import muffintop.cym.api.repository.UserResolver;
 import muffintop.cym.api.service.EmailService;
 import muffintop.cym.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +49,15 @@ public class UserController {
         User user = userService.signIn(request);
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
+        return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
+    }
+
+    @Auth
+    @GetMapping()
+    public ResponseEntity<CommonResponse> getUserInfo(@UserResolver User user) {
         return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
     }
 

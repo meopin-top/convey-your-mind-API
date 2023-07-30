@@ -12,6 +12,7 @@ import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NoFileException;
 import muffintop.cym.api.exception.NonExistIdException;
+import muffintop.cym.api.exception.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,11 @@ public class ResponseExceptionController {
     @ExceptionHandler(value = {NoFileException.class})
     protected ResponseEntity<CommonResponse> handleNoFileException() {
         return ResponseHandler.generateResponse(ResponseCode.FILE_DELETE_FAIL, HttpStatus.OK, null);
+    }
+
+    @ExceptionHandler(value = {UnAuthorizedException.class})
+    protected ResponseEntity<CommonResponse> handleUnAuthorizeException() {
+        return ResponseHandler.generateResponse(ResponseCode.UNAUTHORIZED, HttpStatus.OK, null);
     }
 
     @ExceptionHandler(value = {Exception.class})

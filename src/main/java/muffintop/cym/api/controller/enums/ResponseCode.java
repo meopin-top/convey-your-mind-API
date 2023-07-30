@@ -8,6 +8,8 @@ import lombok.Getter;
 public enum ResponseCode {
 
     //USER
+
+    UNAUTHORIZED(0, "접근 권한이 없습니다"),
     // 회원가입
     SIGN_UP_SUCCESS(1001, "회원가입이 완료되었습니다."),
     DUPLICATED_ID(1011, "이미 존재하는 ID 입니다."),

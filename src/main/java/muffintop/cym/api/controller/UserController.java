@@ -40,7 +40,7 @@ public class UserController {
         if (user.getEmail() != null) {
             emailService.sendMail(user.getEmail());
         }
-        return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);
     }
 
     @PostMapping("/sign-in")

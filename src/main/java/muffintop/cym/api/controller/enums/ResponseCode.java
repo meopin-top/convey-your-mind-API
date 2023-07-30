@@ -23,6 +23,9 @@ public enum ResponseCode {
     NON_EXIST_ID(1111, "존재하지 않는 ID 입니다. 다시 한번 확인해 주세요."),
     INVALID_PASSWORD(1112, "PW를 잘못 입력하셨습니다. 다시 한 번 확인해주세요."),
 
+    //로그아웃
+    LOGOUT_SUCCESS(1201, "로그아웃이 완료되었습니다."),
+
     // 파일
     FILE_UPLOAD_SUCCESS(2001, "파일이 업로드 되었습니다."),
     FILE_DELETE_SUCCESS(2002, "파일이 삭제되었습니다."),

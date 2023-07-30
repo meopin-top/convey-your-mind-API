@@ -18,6 +18,7 @@ import muffintop.cym.api.service.EmailService;
 import muffintop.cym.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,12 +35,17 @@ public class UserController {
     private final EmailService emailService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request)
+    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request, HttpServletResponse response)
         throws MessagingException {
         User user = userService.signUp(request);
         if (user.getEmail() != null) {
             emailService.sendMail(user.getEmail());
         }
+        Token token = tokenManager.generateNewToken(user);
+        Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        response.addCookie(accessTokenCookie);
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);
     }
 
@@ -59,6 +65,15 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<CommonResponse> getUserInfo(@UserResolver User user) {
         return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
+    }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<CommonResponse> logout(HttpServletResponse response) {
+        Cookie accessTokenCookie = new Cookie("AccessToken", null);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        response.addCookie(accessTokenCookie);
+        return ResponseHandler.generateResponse(ResponseCode.LOGOUT_SUCCESS, HttpStatus.OK, null);
     }
 
 

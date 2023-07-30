@@ -124,7 +124,6 @@ public class UserService {
             .email(request.getEmail())
             .authMethod(AuthMethod.EMAIL.getValue())
             .nickName(makeNickname())
-            .profile(null)
             .password(passwordEncoder.encode(request.getPassword()))
             .createdDatetime(LocalDateTime.now())
             .status(UserStatus.UNAUTHORIZED.getValue())

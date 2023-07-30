@@ -9,6 +9,7 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,8 @@ public class User implements Serializable {
 
     private String nickName;
 
-    private String profile;
+    @Default
+    private String profile = "https://storage.googleapis.com/convey-your-mind-dev-bucket/profile/default.jpg";
 
     @JsonIgnore
     private String password;

@@ -76,7 +76,7 @@ public class ResponseExceptionController {
 
     @ExceptionHandler(value = {UnAuthorizedException.class})
     protected ResponseEntity<CommonResponse> handleUnAuthorizeException() {
-        return ResponseHandler.generateResponse(ResponseCode.UNAUTHORIZED, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.UNAUTHORIZED, HttpStatus.UNAUTHORIZED, null);
     }
 
     @ExceptionHandler(value = {Exception.class})

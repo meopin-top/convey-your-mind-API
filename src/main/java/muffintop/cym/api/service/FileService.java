@@ -62,7 +62,6 @@ public class FileService {
     public void delete(String objectName) {
         try {
             Blob blob = storage.get(bucketName, objectName);
-
             Storage.BlobSourceOption precondition =
                 Storage.BlobSourceOption.generationMatch(blob.getGeneration());
 

@@ -30,7 +30,22 @@ public enum ResponseCode {
     FILE_UPLOAD_SUCCESS(2001, "파일이 업로드 되었습니다."),
     FILE_DELETE_SUCCESS(2002, "파일이 삭제되었습니다."),
     FILE_UPLOAD_FAIL(2011, "파일 업로드가 실패하였습니다."),
-    FILE_DELETE_FAIL(2012, "파일 삭제가 실패하였습니다.");
+    FILE_DELETE_FAIL(2012, "파일 삭제가 실패하였습니다."),
+
+    // 프로젝트
+    PROJECT_READ_SUCCESS(3001, "프로젝트가 정상 조회되었습니다."),
+    PROJECT_CREATE_SUCCESS(3002, "프로젝트가 정상 생성되었습니다."),
+    PROJECT_UPDATE_SUCCESS(3003, "프로젝트가 정상 갱신되었습니다."),
+    PROJECT_DELETE_SUCCESS(3004, "프로젝트가 정상 삭제되었습니다."),
+
+    PROJECT_READ_FAIL(3011, "프로젝트 조회에 실패하였습니다."),
+    PROJECT_CREATE_FAIL(3012, "프로젝트 생성에 실패하였습니다."),
+    PROJECT_UPDATE_FAIL(3013, "프로젝트 갱신에 실패하였습니다."),
+    PROJECT_DELETE_FAIL(3014, "프로젝트 삭제에 실패하였습니다."),
+
+    PROJECT_INVITE_CODE_SUCCESS(3101, "초대코드가 생성되었습니다."),
+    PROJECT_INVITE_CODE_EXISTED(3102, "초대코드가 존재합니다.");
+
 
     private int code;
     private String message;

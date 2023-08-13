@@ -9,10 +9,10 @@ name: API Server CI/CD
 
 on:
   push:
-    branches: ["feature/#14"]
+    branches: ["feature/#16"]
 env:
   PREVIOUS_VERSION : 0.0.0
-  APP_VERSION: 0.5.3.1
+  APP_VERSION: 0.6.0.0
 
 jobs:
   build:

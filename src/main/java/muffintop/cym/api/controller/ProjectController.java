@@ -69,7 +69,7 @@ public class ProjectController {
     @GetMapping("/invite-code/{inviteCode}")
     public ResponseEntity<CommonResponse> makeInviteCode(@PathVariable String inviteCode)
         throws UnsupportedEncodingException {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_INVITE_CODE_SUCCESS, HttpStatus.OK, projectService.getProjectByInviteCode(inviteCode));
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_SUCCESS, HttpStatus.OK, projectService.getProjectByInviteCode(inviteCode));
     }
 
 }

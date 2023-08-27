@@ -44,9 +44,12 @@ public enum ResponseCode {
     PROJECT_DELETE_FAIL(3014, "프로젝트 삭제에 실패하였습니다."),
 
     PROJECT_INVITE_CODE_SUCCESS(3101, "초대코드가 생성되었습니다."),
-    PROJECT_INVITE_CODE_EXISTED(3102, "초대코드가 존재합니다.");
+    PROJECT_INVITE_CODE_EXISTED(3102, "초대코드가 존재합니다."),
 
+    PROJECT_SUBMIT_SUCCESS(3201, "프로젝트가 제출되었습니다."),
 
+    // 프로젝트 컨텐츠
+    PROJECT_CONTENT_CREATE_SUCCESS(4001,"컨텐츠가 정상 생성되었습니다.");
     private int code;
     private String message;
 

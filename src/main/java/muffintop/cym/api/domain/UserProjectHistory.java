@@ -6,15 +6,17 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import muffintop.cym.api.controller.enums.Status;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,6 +31,7 @@ public class UserProjectHistory implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonIgnore
@@ -39,8 +42,11 @@ public class UserProjectHistory implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Default
-    private char status = 'R';
+    private Status status;
+
+    private LocalDateTime expiredDatetime;
+
+    private boolean isOwner;
 
     @CreationTimestamp
     @JsonIgnore

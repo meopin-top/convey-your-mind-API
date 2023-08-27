@@ -120,7 +120,7 @@ public class UserService {
         }
 
         User newUser = User.builder()
-            .userId(request.getUserId())
+            .id(request.getUserId())
             .email(request.getEmail())
             .authMethod(AuthMethod.EMAIL.getValue())
             .nickName(makeNickname())
@@ -149,18 +149,18 @@ public class UserService {
     }
 
     public User getUserByUserPk(UserPk userPk) {
-        return userRepository.findUserByUserIdAndAuthMethod(userPk.getUserId(),
+        return userRepository.findUserByIdAndAuthMethod(userPk.getId(),
             userPk.getAuthMethod()).orElse(null);
     }
 
     public User signInWithKakao(KakaoUser kakaoUser) {
-        User user = userRepository.findUserByUserIdAndAuthMethod(kakaoUser.getId().toString(),
+        User user = userRepository.findUserByIdAndAuthMethod(kakaoUser.getId().toString(),
             AuthMethod.KAKAO.getValue()).orElse(null);
 
         //회원 가입 진행
         if (user == null) {
             User newUser = User.builder()
-                .userId(kakaoUser.getId().toString())
+                .id(kakaoUser.getId().toString())
                 .email(kakaoUser.getKakaoAccount().getEmail())
                 .authMethod(AuthMethod.KAKAO.getValue())
                 .nickName(kakaoUser.getKakaoAccount().getKakaoProfile().getNickname())
@@ -181,13 +181,13 @@ public class UserService {
 
     public User signInWithNaver(NaverUser naverUser) {
         NaverUserInfo userInfo = naverUser.getResponse();
-        User user = userRepository.findUserByUserIdAndAuthMethod(userInfo.getId(),
+        User user = userRepository.findUserByIdAndAuthMethod(userInfo.getId(),
             AuthMethod.NAVER.getValue()).orElse(null);
 
         //회원 가입 진행
         if (user == null) {
             User newUser = User.builder()
-                .userId(userInfo.getId())
+                .id(userInfo.getId())
                 .email(userInfo.getEmail())
                 .authMethod(AuthMethod.NAVER.getValue())
                 .nickName(userInfo.getNickName())

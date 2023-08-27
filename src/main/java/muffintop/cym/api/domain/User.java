@@ -28,7 +28,7 @@ import muffintop.cym.api.domain.key.UserPk;
 public class User implements Serializable {
 
     @Id
-    private String userId;
+    private String id;
 
     @Id
     private char authMethod;

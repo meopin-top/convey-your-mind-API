@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.component.ResponseHandler;
 import muffintop.cym.api.controller.enums.ResponseCode;
+import muffintop.cym.api.controller.request.ProjectContentRequest;
 import muffintop.cym.api.controller.request.ProjectRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.domain.User;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -70,6 +72,36 @@ public class ProjectController {
     public ResponseEntity<CommonResponse> makeInviteCode(@PathVariable String inviteCode)
         throws UnsupportedEncodingException {
         return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_SUCCESS, HttpStatus.OK, projectService.getProjectByInviteCode(inviteCode));
+    }
+
+    @PostMapping("/{projectId}/enter")
+    public ResponseEntity<CommonResponse> enterProject(@UserResolver User user,@PathVariable Long projectId){
+        projectService.enterProject(projectId,user);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_SUCCESS, HttpStatus.OK, null);
+    }
+
+    @PostMapping("/{projectId}/contents")
+    public ResponseEntity<CommonResponse> registerContent(@UserResolver User user,@PathVariable Long projectId, @RequestBody
+        ProjectContentRequest request){
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_CONTENT_CREATE_SUCCESS, HttpStatus.OK, projectService.registerContent(user,projectId,request));
+    }
+
+    @Auth
+    @PostMapping("/{projectId}/submit")
+    public ResponseEntity<CommonResponse> submitContent(@UserResolver User user,@PathVariable Long projectId){
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_SUBMIT_SUCCESS, HttpStatus.OK, projectService.submitProject(user,projectId));
+    }
+
+    @Auth
+    @GetMapping("/page")
+    public ResponseEntity<CommonResponse> getMyProject(@UserResolver User user,@RequestParam int pageNum, @RequestParam int pageSize){
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_SUCCESS, HttpStatus.OK, projectService.getMyProject(user,pageNum, pageSize));
+    }
+
+    @Auth
+    @GetMapping("/top3")
+    public ResponseEntity<CommonResponse> getMyProjectTop3(@UserResolver User user){
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_SUCCESS, HttpStatus.OK, projectService.getMyProjectTop3(user));
     }
 
 }

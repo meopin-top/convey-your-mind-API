@@ -12,9 +12,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     Optional<List<Project>> findAllByUser(User user);
 
-    Optional<Project> findByProjectId(Long projectId);
+    Optional<Project> findById(Long projectId);
 
-    Optional<Project> findByUserAndProjectId(User user, Long projectId);
+    Optional<Project> findByUserAndId(User user, Long projectId);
 
     Optional<Project> findByInviteCode(String inviteCode);
 

@@ -31,20 +31,20 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
 
-        //로그인이 필요없는 컨트롤러면 통과
-        if (auth == null) {
-            return true;
-        }
-
         Cookie[] cookies = request.getCookies();
 
         User user = jwtTokenManager.validateToken(cookies);
 
-        if (user == null){
-            throw new UnAuthorizedException();
-        }
-
         request.setAttribute(USER_KEY, user);
+
+        //로그인이 필요없는 컨트롤러면 통과
+        if (auth == null) {
+            return true;
+        }else{
+            if (user == null){
+                throw new UnAuthorizedException();
+            }
+        }
 
         return true;
     }

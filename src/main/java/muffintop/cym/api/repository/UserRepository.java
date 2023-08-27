@@ -11,5 +11,5 @@ public interface UserRepository extends JpaRepository<User, UserPk> {
     @Override
     boolean existsById(UserPk userPk);
 
-    Optional<User> findUserByUserIdAndAuthMethod(String userId, char authMethod);
+    Optional<User> findUserByIdAndAuthMethod(String userId, char authMethod);
 }

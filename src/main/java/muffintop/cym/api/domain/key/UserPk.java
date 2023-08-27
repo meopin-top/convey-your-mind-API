@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserPk implements Serializable {
 
-    private String userId;
+    private String id;
 
     private char authMethod;
 

@@ -46,7 +46,7 @@ public class JwtTokenManager {
     // JWT Access 토큰 생성
     public String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject("User");
-        claims.put("userId", user.getUserId());
+        claims.put("userId", user.getId());
         claims.put("authMethod", user.getAuthMethod());
         Date now = new Date();
         return Jwts.builder()

@@ -37,6 +37,7 @@ out/
 .vscode/
 
 ### 설정 파일 ###
+application-local.yml
 application-dev.yml
 application-dev.properties
 gcs-dev.json

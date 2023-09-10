@@ -39,7 +39,7 @@ public class UserController {
         throws MessagingException {
         User user = userService.signUp(request);
         if (user.getEmail() != null) {
-            emailService.sendMail(user.getEmail());
+            emailService.sendMail(user.getEmail(),user);
         }
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());

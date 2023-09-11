@@ -2,6 +2,7 @@ package muffintop.cym.api.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,14 @@ public class MagicLinkController {
         throws URISyntaxException {
 
         MagicLink targetMagicLink = magicLinkRepository.findById(magicLink).orElse(null);
+        URI redirectUri = new URI(host);
+        if(targetMagicLink.getExpiredDatetime().isBefore(LocalDateTime.now())){
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirectUri);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        }
         Token token = tokenManager.generateNewToken(targetMagicLink.getUser());
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
-        URI redirectUri = new URI(host);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(redirectUri);
         accessTokenCookie.setHttpOnly(true);

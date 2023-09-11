@@ -58,7 +58,7 @@ public class EmailService {
         MagicLink magicLink = MagicLink.builder()
             .id(makeMagicLink())
             .user(user)
-            .expiredDatetime(LocalDateTime.now().plusDays(90))
+            .expiredDatetime(LocalDateTime.now().plusHours(2))
             .build();
 
         magicLinkRepository.save(magicLink);

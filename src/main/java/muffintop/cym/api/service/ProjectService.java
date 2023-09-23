@@ -1,5 +1,6 @@
 package muffintop.cym.api.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import muffintop.cym.api.controller.response.PageResponse;
 import muffintop.cym.api.controller.response.ProjectInfoResponse;
 import muffintop.cym.api.domain.Project;
 import muffintop.cym.api.domain.ProjectContent;
+import muffintop.cym.api.domain.RedisProjectEntity;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.domain.UserProjectHistory;
 import muffintop.cym.api.exception.ExistingInviteCodeException;
@@ -25,6 +27,7 @@ import muffintop.cym.api.exception.UnAuthorizedException;
 import muffintop.cym.api.repository.ProjectContentRepository;
 import muffintop.cym.api.repository.ProjectRepository;
 import muffintop.cym.api.repository.UserProjectHistoryRepository;
+import muffintop.cym.api.utils.RedisUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,6 +41,10 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserProjectHistoryRepository userProjectHistoryRepository;
     private final ProjectContentRepository projectContentRepository;
+
+    private final ObjectMapper objectMapper;
+
+    private final RedisUtils redisUtils;
 
     public Project getProject(Long projectId) {
         return projectRepository.findById(projectId).orElseThrow(ProjectReadFailException::new);
@@ -65,7 +72,14 @@ public class ProjectService {
                 .user(user)
                 .expiredDatetime(LocalDateTime.now().plusDays(7))
                 .build();
-            return projectRepository.save(newProject);
+            newProject = projectRepository.save(newProject);
+            RedisProjectEntity redisProjectEntity = RedisProjectEntity.builder()
+                .projectId(newProject.getId().toString())
+                .status(newProject.getStatus())
+                .contents(new ArrayList<>())
+                .build();
+            redisUtils.setData(newProject.getId().toString(), objectMapper.writeValueAsString(redisProjectEntity));
+            return newProject;
         } catch (Exception e) {
             throw new ProjectCreateFailException();
         }
@@ -179,6 +193,7 @@ public class ProjectService {
         historyList.forEach(userProjectHistory -> {
             userProjectHistory.setStatus(Status.DELIVERED);
         });
+        redisUtils.deleteData(projectId.toString());
         return project;
     }
 

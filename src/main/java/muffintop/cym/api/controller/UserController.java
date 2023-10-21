@@ -56,7 +56,7 @@ public class UserController {
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
         accessTokenCookie.setHttpOnly(true);
-//        accessTokenCookie.setPath("/");
+        accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
         return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
     }
@@ -71,7 +71,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> logout(HttpServletResponse response) {
         Cookie accessTokenCookie = new Cookie("AccessToken", null);
         accessTokenCookie.setHttpOnly(true);
-//        accessTokenCookie.setPath("/");
+        accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
         return ResponseHandler.generateResponse(ResponseCode.LOGOUT_SUCCESS, HttpStatus.OK, null);
     }

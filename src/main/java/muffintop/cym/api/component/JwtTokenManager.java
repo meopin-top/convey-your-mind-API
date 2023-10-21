@@ -76,11 +76,14 @@ public class JwtTokenManager {
 
     public User validateToken(Cookie[] cookies){
         if(cookies == null){
+            LOGGER.info("Cookie is null");
             return null;
         }
 
         Cookie accessTokenCookie = Arrays.stream(cookies).filter(cookie -> "AccessToken".equals(cookie.getName())).findFirst().orElse(null);
+
         if(accessTokenCookie == null){
+            LOGGER.info("Access Cookie is null");
             return null;
         }
 

@@ -43,8 +43,9 @@ public class UserController {
         }
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
+        accessTokenCookie.setDomain("34.64.92.123");
         accessTokenCookie.setHttpOnly(true);
-//        accessTokenCookie.setPath("/");
+        accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);
     }
@@ -55,9 +56,11 @@ public class UserController {
         User user = userService.signIn(request);
         Token token = tokenManager.generateNewToken(user);
         Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
+        accessTokenCookie.setDomain("34.64.92.123");
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);
+        System.out.println(accessTokenCookie);
         return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
     }
 
@@ -70,6 +73,7 @@ public class UserController {
     @DeleteMapping("/logout")
     public ResponseEntity<CommonResponse> logout(HttpServletResponse response) {
         Cookie accessTokenCookie = new Cookie("AccessToken", null);
+        accessTokenCookie.setDomain("34.64.92.123");
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         response.addCookie(accessTokenCookie);

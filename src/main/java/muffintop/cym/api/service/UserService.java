@@ -36,14 +36,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final WebClient webClient;
 
-    @Value("${regex.email}")
-    private String EMAIL_PATTERN;
+    private String EMAIL_PATTERN = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}$";
 
-    @Value("${regex.id}")
-    private String ID_PATTERN;
+    private String ID_PATTERN = "^[a-zA-Z0-9!@#$%^&*()-_=+{}\\[\\]|\\\\;:'\",.<>/?]{6,20}$";
 
-    @Value("${regex.password}")
-    private String PASSWORD_PATTERN;
+    private String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
 
 
     private Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);

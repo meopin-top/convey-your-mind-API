@@ -49,8 +49,7 @@ public class ProjectService {
 
     private final RedisUtils redisUtils;
 
-    @Value("${regex.url}")
-    private String URL_PATTERN;
+    private String URL_PATTERN = "^(?:(?:https?://)?34\\.64\\.92\\.123(?:/edit/|/view/))?(\\w+)$";
 
     private Pattern urlPattern = Pattern.compile(URL_PATTERN);
 

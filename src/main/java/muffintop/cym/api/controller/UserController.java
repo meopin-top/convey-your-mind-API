@@ -41,13 +41,7 @@ public class UserController {
         if (user.getEmail() != null) {
             emailService.sendMail(user.getEmail(),user);
         }
-        Token token = tokenManager.generateNewToken(user);
-        Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
-        accessTokenCookie.setDomain("34.64.92.123");
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setSecure(false);
-        accessTokenCookie.setPath("/");
-        response.addCookie(accessTokenCookie);
+        response.addCookie(tokenManager.makeCookie(user));
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);
     }
 
@@ -55,14 +49,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> signIn(@RequestBody SignInRequest request,
         HttpServletResponse response) {
         User user = userService.signIn(request);
-        Token token = tokenManager.generateNewToken(user);
-        Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
-        accessTokenCookie.setDomain("34.64.92.123");
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setSecure(false);
-        accessTokenCookie.setPath("/");
-        response.addCookie(accessTokenCookie);
-        System.out.println(accessTokenCookie);
+        response.addCookie(tokenManager.makeCookie(user));
         return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
     }
 
@@ -74,12 +61,7 @@ public class UserController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<CommonResponse> logout(HttpServletResponse response) {
-        Cookie accessTokenCookie = new Cookie("AccessToken", null);
-        accessTokenCookie.setDomain("34.64.92.123");
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setSecure(false);
-        accessTokenCookie.setPath("/");
-        response.addCookie(accessTokenCookie);
+        response.addCookie(tokenManager.resetCookie());
         return ResponseHandler.generateResponse(ResponseCode.LOGOUT_SUCCESS, HttpStatus.OK, null);
     }
 

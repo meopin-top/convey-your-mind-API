@@ -120,4 +120,25 @@ public class JwtTokenManager {
             .getBody();
         return claims;
     }
+
+    public Cookie makeCookie(User user) {
+        Token token = generateNewToken(user);
+        Cookie accessTokenCookie = new Cookie("AccessToken", token.getAccessToken());
+        accessTokenCookie.setDomain("34.64.92.123");
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        return accessTokenCookie;
+    }
+
+    public Cookie resetCookie() {
+        Cookie accessTokenCookie = new Cookie("AccessToken", null);
+        accessTokenCookie.setDomain("34.64.92.123");
+        accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        return accessTokenCookie;
+    }
+
+
 }

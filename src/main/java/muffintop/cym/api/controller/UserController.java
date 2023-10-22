@@ -1,6 +1,7 @@
 package muffintop.cym.api.controller;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.component.JwtTokenManager;
@@ -9,6 +10,7 @@ import muffintop.cym.api.controller.enums.ResponseCode;
 import muffintop.cym.api.controller.request.SignInRequest;
 import muffintop.cym.api.controller.request.SignUpRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
+import muffintop.cym.api.domain.Token;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.interceptor.Auth;
 import muffintop.cym.api.repository.UserResolver;
@@ -33,12 +35,11 @@ public class UserController {
     private final EmailService emailService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request,
-        HttpServletResponse response)
+    public ResponseEntity<CommonResponse> signUp(@RequestBody SignUpRequest request, HttpServletResponse response)
         throws MessagingException {
         User user = userService.signUp(request);
         if (user.getEmail() != null) {
-            emailService.sendMail(user.getEmail(), user);
+            emailService.sendMail(user.getEmail(),user);
         }
         response.addCookie(tokenManager.makeCookie(user));
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);

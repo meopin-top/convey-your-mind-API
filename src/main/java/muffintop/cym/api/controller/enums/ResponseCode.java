@@ -50,7 +50,7 @@ public enum ResponseCode {
     PROJECT_SUBMIT_SUCCESS(3201, "프로젝트가 제출되었습니다."),
 
     // 프로젝트 컨텐츠
-    PROJECT_CONTENT_CREATE_SUCCESS(4001, "컨텐츠가 정상 생성되었습니다.");
+    PROJECT_CONTENT_CREATE_SUCCESS(4001,"컨텐츠가 정상 생성되었습니다.");
     private int code;
     private String message;
 

@@ -31,13 +31,12 @@ public class MagicLinkController {
     private String host;
 
     @GetMapping("/{magicLink}")
-    private ResponseEntity<Object> magicLink(@PathVariable String magicLink,
-        HttpServletResponse response)
+    private ResponseEntity<Object> magicLink(@PathVariable String magicLink, HttpServletResponse response)
         throws URISyntaxException {
 
         MagicLink targetMagicLink = magicLinkRepository.findById(magicLink).orElse(null);
         URI redirectUri = new URI(host);
-        if (targetMagicLink.getExpiredDatetime().isBefore(LocalDateTime.now())) {
+        if(targetMagicLink.getExpiredDatetime().isBefore(LocalDateTime.now())){
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirectUri);
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);

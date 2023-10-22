@@ -165,7 +165,7 @@ public class ProjectService {
                     .expiredDatetime(project.getExpiredDatetime())
                     .status(Status.READY)
                     .isOwner(user.equals(project.getUser()))
-                    .isView(false)
+                    .type('E')
                     .build();
                 userProjectHistoryRepository.save(history);
             } else if (project.getStatus() == 'D') {
@@ -175,7 +175,7 @@ public class ProjectService {
                     .expiredDatetime(project.getExpiredDatetime())
                     .status(Status.DELIVERED)
                     .isOwner(user.equals(project.getUser()))
-                    .isView(true)
+                    .type('V')
                     .build();
                 userProjectHistoryRepository.save(history);
             } else {
@@ -238,13 +238,13 @@ public class ProjectService {
             Sort.by("expiredDatetime").descending().and(Sort.by("status")));
         List<UserProjectHistory> userProjectHistoryList;
         if (type.equals("D")) {
-            totalSize = userProjectHistoryRepository.countByUserAndIsViewTrue(user);
-            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndView(user, true,
+            totalSize = userProjectHistoryRepository.countByUserAndType(user, 'V');
+            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndType(user, 'V',
                 pageable);
         } else {
 
-            totalSize = userProjectHistoryRepository.countByUserAndIsViewFalse(user);
-            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndView(user, false,
+            totalSize = userProjectHistoryRepository.countByUserAndType(user, 'E');
+            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndType(user, 'E',
                 pageable);
 
         }

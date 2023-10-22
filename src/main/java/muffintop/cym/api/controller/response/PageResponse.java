@@ -1,5 +1,6 @@
 package muffintop.cym.api.controller.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data

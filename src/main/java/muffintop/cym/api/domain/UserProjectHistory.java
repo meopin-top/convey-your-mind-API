@@ -48,7 +48,7 @@ public class UserProjectHistory implements Serializable {
 
     private boolean isOwner;
 
-    private boolean isView;
+    private char type;
 
     @CreationTimestamp
     @JsonIgnore

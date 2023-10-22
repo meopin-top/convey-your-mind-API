@@ -57,10 +57,10 @@ public class ProjectService {
 
     @Transactional
     public Project createProject(User user, ProjectRequest request) {
+        if (projectRepository.existsByInviteCode(request.getInviteCode())) {
+            throw new ExistingInviteCodeException();
+        }
         try {
-            if (projectRepository.existsByInviteCode(request.getInviteCode())) {
-                throw new ExistingInviteCodeException();
-            }
             Project newProject = Project.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())

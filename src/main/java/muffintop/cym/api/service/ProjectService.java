@@ -3,6 +3,8 @@ package muffintop.cym.api.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -64,6 +66,10 @@ public class ProjectService {
 
     @Transactional
     public Project createProject(User user, ProjectRequest request) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Parse the string to LocalDateTime
         if (projectRepository.existsByInviteCode(request.getInviteCode())) {
             throw new ExistingInviteCodeException();
         }
@@ -77,7 +83,7 @@ public class ProjectService {
                 .type(request.getType())
                 .status('O')
                 .user(user)
-                .expiredDatetime(request.getExpiredDatetime())
+                .expiredDatetime(LocalDateTime.parse(request.getExpiredDatetime(), formatter))
                 .build();
             newProject = projectRepository.save(newProject);
             RedisProjectEntity redisProjectEntity = RedisProjectEntity.builder()

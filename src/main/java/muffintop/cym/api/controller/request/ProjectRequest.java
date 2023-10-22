@@ -19,8 +19,8 @@ public class ProjectRequest {
 
     private String destination;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime expiredDatetime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String expiredDatetime;
 
     private char type;
 

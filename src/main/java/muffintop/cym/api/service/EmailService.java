@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.domain.MagicLink;
 import muffintop.cym.api.domain.User;
@@ -54,7 +53,6 @@ public class EmailService {
     public void sendMail(String email, User user) throws MessagingException {
         Context context = new Context();
 
-
         MagicLink magicLink = MagicLink.builder()
             .id(makeMagicLink())
             .user(user)
@@ -65,14 +63,14 @@ public class EmailService {
 
         context.setVariable("nickname", user.getNickName());
         context.setVariable("userId", user.getId());
-        context.setVariable("host", host+"/api/magic-link/"); // 메시지소스로 설정해두고 받아쓰면 참 편하다.
+        context.setVariable("host", host + "/api/magic-link/"); // 메시지소스로 설정해두고 받아쓰면 참 편하다.
         context.setVariable("link", magicLink.getId()); // 인증을 진행할 링크
-
 
         String message = templateEngine.process("email.html", context);
 
         MimeMessage mail = emailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true, "UTF-8"); // 2번째 인자는 Multipart여부 결정
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true,
+            "UTF-8"); // 2번째 인자는 Multipart여부 결정
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject("[마음을 전해요] 회원가입이 완료되었습니다.");
         mimeMessageHelper.setText(message, true); // 2번째 인자는 HTML여부 결정

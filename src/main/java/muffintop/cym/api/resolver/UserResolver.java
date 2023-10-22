@@ -22,6 +22,7 @@ public class UserResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        return ((HttpServletRequest) webRequest.getNativeRequest()).getAttribute(AuthInterceptor.USER_KEY);
+        return ((HttpServletRequest) webRequest.getNativeRequest()).getAttribute(
+            AuthInterceptor.USER_KEY);
     }
 }

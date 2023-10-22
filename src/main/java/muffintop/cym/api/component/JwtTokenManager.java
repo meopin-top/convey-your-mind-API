@@ -3,7 +3,6 @@ package muffintop.cym.api.component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Arrays;
@@ -12,7 +11,6 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
-import muffintop.cym.api.controller.ResponseExceptionController;
 import muffintop.cym.api.domain.Token;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.domain.key.UserPk;
@@ -32,7 +30,7 @@ public class JwtTokenManager {
     // 토큰 유효시간 90일
     private long accessTokenTime = 90 * 24 * 60 * 60 * 1000L;
 
-    private final static String DOMAIN  = "localhost";
+    private final static String DOMAIN = "localhost";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenManager.class);
 
@@ -74,26 +72,27 @@ public class JwtTokenManager {
     }
 
 
-    public User validateToken(Cookie[] cookies){
-        if(cookies == null){
+    public User validateToken(Cookie[] cookies) {
+        if (cookies == null) {
             LOGGER.info("Cookie is null");
             return null;
         }
 
-        Cookie accessTokenCookie = Arrays.stream(cookies).filter(cookie -> "AccessToken".equals(cookie.getName())).findFirst().orElse(null);
+        Cookie accessTokenCookie = Arrays.stream(cookies)
+            .filter(cookie -> "AccessToken".equals(cookie.getName())).findFirst().orElse(null);
 
-        if(accessTokenCookie == null){
+        if (accessTokenCookie == null) {
             LOGGER.info("Access Cookie is null");
             return null;
         }
 
         String accessToken = accessTokenCookie.getValue();
 
-        try{
+        try {
             Claims claims = parseClaims(accessToken);
             String id = (String) claims.get("userId");
             String authMethod = (String) claims.get("authMethod");
-            UserPk userPk = new UserPk(id,authMethod.charAt(0));
+            UserPk userPk = new UserPk(id, authMethod.charAt(0));
 
             User user = userService.getUserByUserPk(userPk);
 
@@ -113,7 +112,7 @@ public class JwtTokenManager {
         }
     }
 
-    private Claims parseClaims(String accessToken){
+    private Claims parseClaims(String accessToken) {
         Claims claims = Jwts.parser()
             .setSigningKey(secretKey)
             .parseClaimsJws(accessToken)

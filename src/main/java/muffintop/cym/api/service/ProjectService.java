@@ -3,15 +3,12 @@ package muffintop.cym.api.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
-import muffintop.cym.api.exception.InvalidInviteCodeException;
-import org.springframework.beans.factory.annotation.Value;
 import muffintop.cym.api.controller.enums.Status;
 import muffintop.cym.api.controller.request.ProjectContentRequest;
 import muffintop.cym.api.controller.request.ProjectRequest;
@@ -23,6 +20,7 @@ import muffintop.cym.api.domain.RedisProjectEntity;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.domain.UserProjectHistory;
 import muffintop.cym.api.exception.ExistingInviteCodeException;
+import muffintop.cym.api.exception.InvalidInviteCodeException;
 import muffintop.cym.api.exception.ProjectCreateFailException;
 import muffintop.cym.api.exception.ProjectDeleteFailException;
 import muffintop.cym.api.exception.ProjectReadFailException;
@@ -32,6 +30,7 @@ import muffintop.cym.api.repository.ProjectContentRepository;
 import muffintop.cym.api.repository.ProjectRepository;
 import muffintop.cym.api.repository.UserProjectHistoryRepository;
 import muffintop.cym.api.utils.RedisUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -79,7 +78,7 @@ public class ProjectService {
                 .type(request.getType())
                 .status('O')
                 .user(user)
-                .expiredDatetime(LocalDateTime.now().plusDays(7))
+                .expiredDatetime(request.getExpiredDatetime())
                 .build();
             newProject = projectRepository.save(newProject);
             RedisProjectEntity redisProjectEntity = RedisProjectEntity.builder()
@@ -87,7 +86,8 @@ public class ProjectService {
                 .status(newProject.getStatus())
                 .contents(new ArrayList<>())
                 .build();
-            redisUtils.setData(newProject.getId().toString(), objectMapper.writeValueAsString(redisProjectEntity));
+            redisUtils.setData(newProject.getId().toString(),
+                objectMapper.writeValueAsString(redisProjectEntity));
             return newProject;
         } catch (Exception e) {
             throw new ProjectCreateFailException();
@@ -163,8 +163,7 @@ public class ProjectService {
                     .isView(false)
                     .build();
                 userProjectHistoryRepository.save(history);
-            }
-            else if(project.getStatus() == 'D') {
+            } else if (project.getStatus() == 'D') {
                 history = UserProjectHistory.builder()
                     .user(user)
                     .project(project)
@@ -180,9 +179,9 @@ public class ProjectService {
         }
     }
 
-        @Transactional
-        public ProjectContent registerContent(User user, Long projectId,
-            ProjectContentRequest request) {
+    @Transactional
+    public ProjectContent registerContent(User user, Long projectId,
+        ProjectContentRequest request) {
         if (user != null) {
             UserProjectHistory userProjectHistory = userProjectHistoryRepository.findUserProjectHistoryByProjectIdAndUser(
                 projectId, user).get();
@@ -209,13 +208,15 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project submitProject(User user ,Long projectId){
-        Project project = projectRepository.findById(projectId).orElseThrow(ProjectReadFailException::new);
-        if(!user.equals(project.getUser())){
+    public Project submitProject(User user, Long projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(ProjectReadFailException::new);
+        if (!user.equals(project.getUser())) {
             throw new UnAuthorizedException();
         }
         project.setStatus(Status.DELIVERED.getStatus());
-        List<UserProjectHistory> historyList = userProjectHistoryRepository.findAllByProjectId(projectId);
+        List<UserProjectHistory> historyList = userProjectHistoryRepository.findAllByProjectId(
+            projectId);
         historyList.forEach(userProjectHistory -> {
             userProjectHistory.setStatus(Status.DELIVERED);
         });
@@ -224,29 +225,41 @@ public class ProjectService {
     }
 
     @Transactional
-    public PageResponse<List<ProjectInfoResponse>> getMyProject(User user, int pageNum, int pageSize){
+    public PageResponse<List<ProjectInfoResponse>> getMyProject(User user, int pageNum,
+        int pageSize, String type) {
 
-        long totalSize = userProjectHistoryRepository.countByUser(user);
+        long totalSize;
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize,
+            Sort.by("expiredDatetime").descending().and(Sort.by("status")));
+        List<UserProjectHistory> userProjectHistoryList;
+        if (type.equals("D")) {
+            totalSize = userProjectHistoryRepository.countByUserAndIsViewTrue(user);
+            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndView(user, true,
+                pageable);
+        } else {
 
-        Pageable pageable = PageRequest.of(pageNum-1, pageSize, Sort.by("expiredDatetime").descending().and(Sort.by("status")));
-        List<UserProjectHistory> userProjectHistoryList = userProjectHistoryRepository.findAllByUser(user, pageable);
+            totalSize = userProjectHistoryRepository.countByUserAndIsViewFalse(user);
+            userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndView(user, false,
+                pageable);
+
+        }
 
         List<ProjectInfoResponse> results = new ArrayList<>();
 
         userProjectHistoryList.forEach(history -> {
-            results.add( ProjectInfoResponse.builder()
-                    .id(history.getProject().getId())
-                    .isOwner(history.isOwner())
-                    .title(history.getProject().getTitle())
-                    .description(history.getProject().getDescription())
-                    .inviteCode(history.getProject().getInviteCode())
-                    .maxInviteNum(history.getProject().getMaxInviteNum())
-                    .destination(history.getProject().getDestination())
-                    .type(history.getProject().getType())
-                    .status(history.getStatus().getStatus())
-                    .createdDatetime(history.getProject().getCreatedDatetime())
-                    .updatedDatetime(history.getProject().getUpdatedDatetime())
-                    .expiredDatetime(history.getProject().getExpiredDatetime())
+            results.add(ProjectInfoResponse.builder()
+                .id(history.getProject().getId())
+                .isOwner(history.isOwner())
+                .title(history.getProject().getTitle())
+                .description(history.getProject().getDescription())
+                .inviteCode(history.getProject().getInviteCode())
+                .maxInviteNum(history.getProject().getMaxInviteNum())
+                .destination(history.getProject().getDestination())
+                .type(history.getProject().getType())
+                .status(history.getStatus().getStatus())
+                .createdDatetime(history.getProject().getCreatedDatetime())
+                .updatedDatetime(history.getProject().getUpdatedDatetime())
+                .expiredDatetime(history.getProject().getExpiredDatetime())
                 .build()
             );
         });
@@ -257,15 +270,17 @@ public class ProjectService {
         return response;
     }
 
-    @Transactional
-    public List<ProjectInfoResponse> getMyProjectTop3(User user){
 
-        List<UserProjectHistory> userProjectHistoryList = userProjectHistoryRepository.findTop3ByUserOrderByExpiredDatetimeDesc(user);
+    @Transactional
+    public List<ProjectInfoResponse> getMyProjectTop3(User user) {
+
+        List<UserProjectHistory> userProjectHistoryList = userProjectHistoryRepository.findTop3ByUserOrderByExpiredDatetimeDesc(
+            user);
 
         List<ProjectInfoResponse> results = new ArrayList<>();
 
         userProjectHistoryList.forEach(history -> {
-            results.add( ProjectInfoResponse.builder()
+            results.add(ProjectInfoResponse.builder()
                 .id(history.getProject().getId())
                 .isOwner(history.isOwner())
                 .title(history.getProject().getTitle())
@@ -283,7 +298,7 @@ public class ProjectService {
         return results;
     }
 
-    private String findInviteCode(String code){
+    private String findInviteCode(String code) {
         Matcher matcher = urlPattern.matcher(code);
         if (matcher.find()) {
             return matcher.group(1);

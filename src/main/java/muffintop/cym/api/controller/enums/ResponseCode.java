@@ -38,7 +38,7 @@ public enum ResponseCode {
     PROJECT_UPDATE_SUCCESS(3003, "프로젝트가 정상 갱신되었습니다."),
     PROJECT_DELETE_SUCCESS(3004, "프로젝트가 정상 삭제되었습니다."),
     PROJECT_REGISTER_SUCCESS(3005, "프로젝트가 정상 등록되었습니다."),
-    
+
     PROJECT_READ_FAIL(3011, "프로젝트 조회에 실패하였습니다."),
     PROJECT_CREATE_FAIL(3012, "프로젝트 생성에 실패하였습니다."),
     PROJECT_UPDATE_FAIL(3013, "프로젝트 갱신에 실패하였습니다."),
@@ -50,7 +50,7 @@ public enum ResponseCode {
     PROJECT_SUBMIT_SUCCESS(3201, "프로젝트가 제출되었습니다."),
 
     // 프로젝트 컨텐츠
-    PROJECT_CONTENT_CREATE_SUCCESS(4001,"컨텐츠가 정상 생성되었습니다.");
+    PROJECT_CONTENT_CREATE_SUCCESS(4001, "컨텐츠가 정상 생성되었습니다.");
     private int code;
     private String message;
 

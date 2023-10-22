@@ -81,32 +81,38 @@ public class ResponseExceptionController {
 
     @ExceptionHandler(value = {UnAuthorizedException.class})
     protected ResponseEntity<CommonResponse> handleUnAuthorizeException() {
-        return ResponseHandler.generateResponse(ResponseCode.UNAUTHORIZED, HttpStatus.UNAUTHORIZED, null);
+        return ResponseHandler.generateResponse(ResponseCode.UNAUTHORIZED, HttpStatus.UNAUTHORIZED,
+            null);
     }
 
     @ExceptionHandler(value = {ProjectReadFailException.class})
     protected ResponseEntity<CommonResponse> handleProjectReadFailException() {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_FAIL, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_READ_FAIL, HttpStatus.OK,
+            null);
     }
 
     @ExceptionHandler(value = {ProjectCreateFailException.class})
     protected ResponseEntity<CommonResponse> handleProjectCreateFailException() {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_CREATE_FAIL, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_CREATE_FAIL, HttpStatus.OK,
+            null);
     }
 
     @ExceptionHandler(value = {ProjectUpdateFailException.class})
     protected ResponseEntity<CommonResponse> handleProjectUpdateFailException() {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_UPDATE_FAIL, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_UPDATE_FAIL, HttpStatus.OK,
+            null);
     }
 
     @ExceptionHandler(value = {ProjectDeleteFailException.class})
     protected ResponseEntity<CommonResponse> handleProjectDeleteFailException() {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_DELETE_FAIL, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_DELETE_FAIL, HttpStatus.OK,
+            null);
     }
 
     @ExceptionHandler(value = {ExistingInviteCodeException.class})
     protected ResponseEntity<CommonResponse> handleExistingInviteCodeException() {
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_INVITE_CODE_EXISTED, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_INVITE_CODE_EXISTED,
+            HttpStatus.OK, null);
     }
 
     @ExceptionHandler(value = {Exception.class})

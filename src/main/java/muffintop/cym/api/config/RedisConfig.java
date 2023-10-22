@@ -21,11 +21,13 @@ public class RedisConfig {
 
     @Value("${spring.redis.password}")
     private String password;
+
     @Bean
-    public RedisConnectionFactory redisConnectionFactory(){
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisHost, redisPort);
+    public RedisConnectionFactory redisConnectionFactory() {
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisHost,
+            redisPort);
         // 패스워드가 있는경우
-         lettuceConnectionFactory.setPassword(password);
+        lettuceConnectionFactory.setPassword(password);
         return lettuceConnectionFactory;
     }
 

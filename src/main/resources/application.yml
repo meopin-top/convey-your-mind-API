@@ -10,3 +10,9 @@ host:
   kakao-user: https://kapi.kakao.com/v2/user/me
   naver-token: https://nid.naver.com/oauth2.0/token
   naver-user: https://openapi.naver.com/v1/nid/me
+
+regex:
+  email: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$
+  id : ^[a-zA-Z0-9!@#$%^&*()-_=+{}\[\]|\\;:'",.<>/?]{6,20}$
+  password : ^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
+  url : ^(?:(?:https?://)?34\.64\.92\.123(?:/edit/|/view/))?(\w+)$

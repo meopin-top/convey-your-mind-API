@@ -7,7 +7,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import muffintop.cym.api.exception.InvalidInviteCodeException;
+import org.springframework.beans.factory.annotation.Value;
 import muffintop.cym.api.controller.enums.Status;
 import muffintop.cym.api.controller.request.ProjectContentRequest;
 import muffintop.cym.api.controller.request.ProjectRequest;
@@ -45,6 +49,11 @@ public class ProjectService {
     private final ObjectMapper objectMapper;
 
     private final RedisUtils redisUtils;
+
+    @Value("${regex.url}")
+    private String URL_PATTERN;
+
+    private Pattern urlPattern = Pattern.compile(URL_PATTERN);
 
     public Project getProject(Long projectId) {
         return projectRepository.findById(projectId).orElseThrow(ProjectReadFailException::new);
@@ -143,14 +152,31 @@ public class ProjectService {
         if (!userProjectHistoryRepository.existsByProjectIdAndUser(projectId, user)) {
             Project project = projectRepository.findById(projectId)
                 .orElseThrow(ProjectReadFailException::new);
-            UserProjectHistory history = UserProjectHistory.builder()
-                .user(user)
-                .project(project)
-                .expiredDatetime(project.getExpiredDatetime())
-                .status(Status.READY)
-                .isOwner(user.equals(project.getUser()))
-                .build();
-            userProjectHistoryRepository.save(history);
+            UserProjectHistory history;
+            if (project.getStatus() == 'O') {
+                history = UserProjectHistory.builder()
+                    .user(user)
+                    .project(project)
+                    .expiredDatetime(project.getExpiredDatetime())
+                    .status(Status.READY)
+                    .isOwner(user.equals(project.getUser()))
+                    .isView(false)
+                    .build();
+                userProjectHistoryRepository.save(history);
+            }
+            else if(project.getStatus() == 'D') {
+                history = UserProjectHistory.builder()
+                    .user(user)
+                    .project(project)
+                    .expiredDatetime(project.getExpiredDatetime())
+                    .status(Status.DELIVERED)
+                    .isOwner(user.equals(project.getUser()))
+                    .isView(true)
+                    .build();
+                userProjectHistoryRepository.save(history);
+            } else {
+                return;
+            }
         }
     }
 
@@ -256,4 +282,25 @@ public class ProjectService {
         });
         return results;
     }
+
+    private String findInviteCode(String code){
+        Matcher matcher = urlPattern.matcher(code);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    public void registerProject(User user, String code) throws UnsupportedEncodingException {
+        String inviteCode = findInviteCode(code);
+        if (inviteCode == null) {
+            throw new InvalidInviteCodeException();
+        }
+
+        Project project = getProjectByInviteCode(inviteCode);
+
+        enterProject(project.getId(), user);
+    }
+
+
 }

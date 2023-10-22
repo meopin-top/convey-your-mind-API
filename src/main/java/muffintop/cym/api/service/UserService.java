@@ -21,6 +21,7 @@ import muffintop.cym.api.repository.UserRepository;
 import muffintop.cym.api.service.dto.kakao.KakaoUser;
 import muffintop.cym.api.service.dto.naver.NaverUser;
 import muffintop.cym.api.service.dto.naver.NaverUserInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +36,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final WebClient webClient;
 
-    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}$";
-    private static final String ID_PATTERN = "^[a-zA-Z0-9!@#$%^&*()-_=+{}\\[\\]|\\\\;:'\",.<>/?]{6,20}$";
-    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+    @Value("${regex.email}")
+    private String EMAIL_PATTERN;
+
+    @Value("${regex.id}")
+    private String ID_PATTERN;
+
+    @Value("${regex.password}")
+    private String PASSWORD_PATTERN;
 
 
-    private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
-    private static final Pattern idPattern = Pattern.compile(ID_PATTERN);
-    private static final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
+    private Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
+    private Pattern idPattern = Pattern.compile(ID_PATTERN);
+    private Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
 
     private boolean isValidUserName(UserPk userPk) {
         return !userRepository.existsById(userPk);

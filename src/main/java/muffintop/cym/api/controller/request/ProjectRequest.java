@@ -1,5 +1,7 @@
 package muffintop.cym.api.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,6 +18,9 @@ public class ProjectRequest {
     private int maxInviteNum;
 
     private String destination;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime expiredDatetime;
 
     private char type;
 

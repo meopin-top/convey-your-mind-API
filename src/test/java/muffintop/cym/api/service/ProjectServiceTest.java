@@ -12,7 +12,7 @@ class ProjectServiceTest {
     void test1() {
         String regex = "^(?:(?:https?://)?34\\.64\\.92\\.123(?:/edit/|/view/))?(\\w+)$";
 
-        String input = "https://34.64.92.123/edit/123";
+        String input = "inviteCode1";
         // Create a Pattern object
         Pattern pattern = Pattern.compile(regex);
 
@@ -21,6 +21,7 @@ class ProjectServiceTest {
 
         // Find and print custom URLs
         while (matcher.find()) {
+            System.out.println(1);
             System.out.println(matcher.group(1));
             System.out.println("Found Custom URL: " + matcher.group());
         }

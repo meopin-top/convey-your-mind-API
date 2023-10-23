@@ -304,6 +304,7 @@ public class ProjectService {
     }
 
     private String findInviteCode(String code) {
+        System.out.println(code);
         Matcher matcher = urlPattern.matcher(code);
         if (matcher.find()) {
             return matcher.group(1);
@@ -312,6 +313,7 @@ public class ProjectService {
     }
 
     public void registerProject(User user, String code) throws UnsupportedEncodingException {
+        System.out.println(code);
         String inviteCode = findInviteCode(code);
         if (inviteCode == null) {
             throw new InvalidInviteCodeException();

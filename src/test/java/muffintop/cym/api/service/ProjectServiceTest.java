@@ -20,7 +20,7 @@ class ProjectServiceTest {
         Matcher matcher = pattern.matcher(input);
 
         // Find and print custom URLs
-        while (matcher.find()) {
+        if (matcher.find()) {
             System.out.println(1);
             System.out.println(matcher.group(1));
             System.out.println("Found Custom URL: " + matcher.group());

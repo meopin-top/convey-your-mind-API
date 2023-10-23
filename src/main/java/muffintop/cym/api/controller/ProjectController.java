@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.component.ResponseHandler;
 import muffintop.cym.api.controller.enums.ResponseCode;
 import muffintop.cym.api.controller.request.ProjectContentRequest;
+import muffintop.cym.api.controller.request.ProjectRegisterRequest;
 import muffintop.cym.api.controller.request.ProjectRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.domain.User;
@@ -108,9 +109,9 @@ public class ProjectController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CommonResponse> registerProject(@UserResolver User user, @RequestBody String code)
+    public ResponseEntity<CommonResponse> registerProject(@UserResolver User user, @RequestBody ProjectRegisterRequest request)
         throws UnsupportedEncodingException {
-        projectService.registerProject(user, code);
+        projectService.registerProject(user, request.getCode());
         return ResponseHandler.generateResponse(ResponseCode.PROJECT_REGISTER_SUCCESS, HttpStatus.OK, null);
 
     }

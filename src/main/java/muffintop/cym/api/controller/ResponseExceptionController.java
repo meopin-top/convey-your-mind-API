@@ -12,6 +12,7 @@ import muffintop.cym.api.exception.InvalidFormatEmailException;
 import muffintop.cym.api.exception.InvalidFormatIdException;
 import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
+import muffintop.cym.api.exception.NoEmailException;
 import muffintop.cym.api.exception.NoFileException;
 import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.exception.ProjectCreateFailException;
@@ -112,6 +113,11 @@ public class ResponseExceptionController {
 
     @ExceptionHandler(value = {ExistingEmailCodeException.class})
     protected ResponseEntity<CommonResponse> handleExistingEmailException() {
+        return ResponseHandler.generateResponse(ResponseCode.EXISTED_EMAIL, HttpStatus.OK, null);
+    }
+
+    @ExceptionHandler(value = {NoEmailException.class})
+    protected ResponseEntity<CommonResponse> handleNoEmailException() {
         return ResponseHandler.generateResponse(ResponseCode.EXISTED_EMAIL, HttpStatus.OK, null);
     }
 

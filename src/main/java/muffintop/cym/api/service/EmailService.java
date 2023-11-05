@@ -50,7 +50,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendMail(String email, User user) throws MessagingException {
+    public void sendWelcomeMail(String email, User user) throws MessagingException {
         Context context = new Context();
 
         MagicLink magicLink = MagicLink.builder()
@@ -66,13 +66,67 @@ public class EmailService {
         context.setVariable("host", host + "/api/magic-link/"); // 메시지소스로 설정해두고 받아쓰면 참 편하다.
         context.setVariable("link", magicLink.getId()); // 인증을 진행할 링크
 
-        String message = templateEngine.process("email.html", context);
+        String message = templateEngine.process("welcome.html", context);
 
         MimeMessage mail = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true,
             "UTF-8"); // 2번째 인자는 Multipart여부 결정
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject("[마음을 전해요] 회원가입이 완료되었습니다.");
+        mimeMessageHelper.setText(message, true); // 2번째 인자는 HTML여부 결정
+        emailSender.send(mail);
+    }
+
+    @Async
+    public void sendPasswordMail(String email, User user, String password) throws MessagingException {
+        Context context = new Context();
+
+        MagicLink magicLink = MagicLink.builder()
+            .id(makeMagicLink())
+            .user(user)
+            .expiredDatetime(LocalDateTime.now().plusHours(2))
+            .build();
+
+        magicLinkRepository.save(magicLink);
+
+        context.setVariable("nickname", user.getNickName());
+        context.setVariable("userId", user.getId());
+        context.setVariable("password", password);
+        context.setVariable("host", host + "/api/magic-link/"); // 메시지소스로 설정해두고 받아쓰면 참 편하다.
+        context.setVariable("link", magicLink.getId()); // 인증을 진행할 링크
+
+        String message = templateEngine.process("password.html", context);
+
+        MimeMessage mail = emailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true,
+            "UTF-8"); // 2번째 인자는 Multipart여부 결정
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("[마음을 전해요] 내 계정 정보찾기 안내입니다.");
+        mimeMessageHelper.setText(message, true); // 2번째 인자는 HTML여부 결정
+        emailSender.send(mail);
+    }
+
+    @Async
+    public void sendSpareMail(String email, User user) throws MessagingException {
+        Context context = new Context();
+
+        MagicLink magicLink = MagicLink.builder()
+            .id(makeMagicLink())
+            .user(user)
+            .expiredDatetime(LocalDateTime.now().plusHours(2))
+            .build();
+
+        magicLinkRepository.save(magicLink);
+        context.setVariable("userId", user.getId());
+
+
+        String message = templateEngine.process("spare-email.html", context);
+
+        MimeMessage mail = emailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mail, true,
+            "UTF-8"); // 2번째 인자는 Multipart여부 결정
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("[마음을 전해요] 예비 이메일 인증 안내입니다..");
         mimeMessageHelper.setText(message, true); // 2번째 인자는 HTML여부 결정
         emailSender.send(mail);
     }

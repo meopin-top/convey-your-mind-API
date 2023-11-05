@@ -31,6 +31,8 @@ public enum ResponseCode {
     //유저정보 갱신
     USER_UPDATE_SUCCESS(1301, "변경이 완료되었습니다."),
     NICkNAME_GENERATE_SUCCESS(1302, "닉네임이 생성되었습니다."),
+    MAIL_SEND_SUCCESS(1303, "메일이 전송되었습니다."),
+    NO_EMAIL(1311, "이메일이 존재하지 않습니다."),
 
     // 파일
     FILE_UPLOAD_SUCCESS(2001, "파일이 업로드 되었습니다."),

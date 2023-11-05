@@ -1,6 +1,7 @@
 package muffintop.cym.api.service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,7 @@ import muffintop.cym.api.exception.InvalidFormatEmailException;
 import muffintop.cym.api.exception.InvalidFormatIdException;
 import muffintop.cym.api.exception.InvalidFormatPasswordException;
 import muffintop.cym.api.exception.InvalidPasswordException;
+import muffintop.cym.api.exception.NoEmailException;
 import muffintop.cym.api.exception.NonExistIdException;
 import muffintop.cym.api.repository.UserRepository;
 import muffintop.cym.api.service.dto.kakao.KakaoUser;
@@ -259,5 +261,38 @@ public class UserService {
         if (profile != null) {
             updateProfile(user, profile);
         }
+    }
+    public String makePassword() {
+        int leftLimit = 48; // 0
+        int rightLimit = 122; // z
+        int targetStringLength = 7;
+
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+            .limit(targetStringLength)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+        return generatedString;
+    }
+
+    @Transactional
+    public String findPassword(User user) {
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
+        if(basicUser.getEmail() == null) {
+            throw new NoEmailException();
+        }
+        String newPassword = makePassword();
+        basicUser.setPassword(passwordEncoder.encode(newPassword));
+        return newPassword;
+    }
+
+    public boolean isValidEmail(User user, String email) {
+        if (userRepository.existsByEmailAndAuthMethod(email, user.getAuthMethod())) {
+            throw new ExistingEmailCodeException();
+        }
+        return true;
     }
 }

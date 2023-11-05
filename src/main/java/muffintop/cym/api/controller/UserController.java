@@ -17,12 +17,14 @@ import muffintop.cym.api.service.EmailService;
 import muffintop.cym.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +43,7 @@ public class UserController {
         throws MessagingException {
         User user = userService.signUp(request);
         if (user.getEmail() != null) {
-            emailService.sendMail(user.getEmail(), user);
+            emailService.sendWelcomeMail(user.getEmail(), user);
         }
         response.addCookie(tokenManager.makeCookie(user));
         return ResponseHandler.generateResponse(ResponseCode.SIGN_UP_SUCCESS, HttpStatus.OK, user);
@@ -82,5 +84,26 @@ public class UserController {
             userService.makeNickname());
     }
 
+    @Auth
+    @PostMapping("/password")
+    public ResponseEntity<CommonResponse> findPassword(@UserResolver User user)
+        throws MessagingException {
+        String newPassword = userService.findPassword(user);
+        emailService.sendPasswordMail(user.getEmail(), user, newPassword);
+        return ResponseHandler.generateResponse(ResponseCode.MAIL_SEND_SUCCESS, HttpStatus.OK,
+            null);
+    }
+
+    @Auth
+    @PostMapping("/email/verify")
+    public ResponseEntity<CommonResponse> verifyEmail(@UserResolver User user, @RequestBody SignUpRequest request)
+        throws MessagingException {
+
+        if(userService.isValidEmail(user, request.getEmail())){
+            emailService.sendSpareMail(request.getEmail(), user);
+        }
+        return ResponseHandler.generateResponse(ResponseCode.MAIL_SEND_SUCCESS, HttpStatus.OK,
+            null);
+    }
 
 }

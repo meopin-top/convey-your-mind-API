@@ -10,9 +10,9 @@ class ProjectServiceTest {
 
     @Test
     void test1() {
-        String regex = "^(?:(?:https?://)?34\\.64\\.92\\.123(?:/edit/|/view/))?(\\w+)$";
+        String regex = "^(?:(?:https?://)?34\\.64\\.92\\.123/rolling-paper(?:/edit/|/view/))?(\\w+)$";
 
-        String input = "inviteCode1";
+        String input = "http://34.64.92.123/rolling-paper/edit/invitecode";
         // Create a Pattern object
         Pattern pattern = Pattern.compile(regex);
 

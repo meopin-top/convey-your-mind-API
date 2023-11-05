@@ -4,6 +4,7 @@ import muffintop.cym.api.component.ResponseHandler;
 import muffintop.cym.api.controller.enums.ResponseCode;
 import muffintop.cym.api.controller.response.CommonResponse;
 import muffintop.cym.api.exception.DuplicatedIdException;
+import muffintop.cym.api.exception.ExistingEmailCodeException;
 import muffintop.cym.api.exception.ExistingInviteCodeException;
 import muffintop.cym.api.exception.FileUploadFailException;
 import muffintop.cym.api.exception.IncorrectPasswordException;
@@ -107,6 +108,11 @@ public class ResponseExceptionController {
     @ExceptionHandler(value = {ExistingInviteCodeException.class})
     protected ResponseEntity<CommonResponse> handleExistingInviteCodeException() {
         return ResponseHandler.generateResponse(ResponseCode.PROJECT_INVITE_CODE_EXISTED, HttpStatus.OK, null);
+    }
+
+    @ExceptionHandler(value = {ExistingEmailCodeException.class})
+    protected ResponseEntity<CommonResponse> handleExistingEmailException() {
+        return ResponseHandler.generateResponse(ResponseCode.EXISTED_EMAIL, HttpStatus.OK, null);
     }
 
     @ExceptionHandler(value = {Exception.class})

@@ -17,6 +17,7 @@ public enum ResponseCode {
     INVALID_FORMAT_PASSWORD(1013, "패스워드의 형태가 유효하지 않습니다."),
     INVALID_FORMAT_ID(1014, "ID의 형태가 유효하지 않습니다."),
     INVALID_FORMAT_EMAIL(1015, "EMAIL의 형태가 유효하지 않습니다."),
+    EXISTED_EMAIL(1016, "이미 존재하는 이메일입니다."),
 
     // 로그인
     SIGN_IN_SUCCESS(1101, "로그인이 완료되었습니다."),
@@ -25,6 +26,10 @@ public enum ResponseCode {
 
     //로그아웃
     LOGOUT_SUCCESS(1201, "로그아웃이 완료되었습니다."),
+
+
+    //유저정보 갱신
+    USER_UPDATE_SUCCESS(1301, "변경이 완료되었습니다."),
 
     // 파일
     FILE_UPLOAD_SUCCESS(2001, "파일이 업로드 되었습니다."),

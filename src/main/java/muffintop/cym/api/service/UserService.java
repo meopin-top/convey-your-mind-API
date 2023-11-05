@@ -1,16 +1,19 @@
 package muffintop.cym.api.service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import muffintop.cym.api.controller.request.SignInRequest;
 import muffintop.cym.api.controller.request.SignUpRequest;
+import muffintop.cym.api.controller.request.UserUpdateRequest;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.domain.enums.AuthMethod;
 import muffintop.cym.api.domain.enums.UserStatus;
 import muffintop.cym.api.domain.key.UserPk;
 import muffintop.cym.api.exception.DuplicatedIdException;
+import muffintop.cym.api.exception.ExistingEmailCodeException;
 import muffintop.cym.api.exception.IncorrectPasswordException;
 import muffintop.cym.api.exception.InvalidFormatEmailException;
 import muffintop.cym.api.exception.InvalidFormatIdException;
@@ -21,10 +24,10 @@ import muffintop.cym.api.repository.UserRepository;
 import muffintop.cym.api.service.dto.kakao.KakaoUser;
 import muffintop.cym.api.service.dto.naver.NaverUser;
 import muffintop.cym.api.service.dto.naver.NaverUserInfo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +37,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
     private final WebClient webClient;
 
     private String EMAIL_PATTERN = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}$";
@@ -207,5 +211,53 @@ public class UserService {
         }
         userRepository.save(user);
         return user;
+    }
+
+    private void updatePassword(User user, String password) {
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
+        basicUser.setPassword(passwordEncoder.encode(password));
+    }
+
+    private void updateEmail(User user, String email) {
+        // TO DO :이메일 전송 추가 필요
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
+        if (userRepository.existsByEmailAndAuthMethod(email, user.getAuthMethod())) {
+            throw new ExistingEmailCodeException();
+        }
+        basicUser.setEmail(email);
+    }
+
+    private void updateNickname(User user, String nickName) {
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
+        basicUser.setNickName(nickName);
+    }
+
+    private void updateProfile(User user, MultipartFile profile) {
+        String uuid = UUID.randomUUID().toString();
+        String url = fileService.makeUrl(uuid);
+        fileService.upload(profile, uuid);
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
+        basicUser.setProfile(url);
+
+    }
+
+    @Transactional
+    public void updateUser(User user, UserUpdateRequest request, MultipartFile profile) {
+        if (request.getEmail() != null) {
+            updateEmail(user, request.getEmail());
+        }
+        if (request.getPassword() != null) {
+            updatePassword(user, request.getPassword());
+        }
+        if (request.getNickname() != null) {
+            updateNickname(user, request.getNickname());
+        }
+        if (profile != null) {
+            updateProfile(user, profile);
+        }
     }
 }

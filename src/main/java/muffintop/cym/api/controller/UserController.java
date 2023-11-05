@@ -76,5 +76,11 @@ public class UserController {
             null);
     }
 
+    @GetMapping("/nickname/random")
+    public ResponseEntity<CommonResponse> getNickname() {
+        return ResponseHandler.generateResponse(ResponseCode.NICkNAME_GENERATE_SUCCESS, HttpStatus.OK,
+            userService.makeNickname());
+    }
+
 
 }

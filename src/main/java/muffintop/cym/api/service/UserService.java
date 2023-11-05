@@ -57,7 +57,7 @@ public class UserService {
 
 
     //여기 서버 내려감감
-    private String makeNickname() {
+    public String makeNickname() {
 
         final String path = "/";
         final String format = "text";

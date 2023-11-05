@@ -154,11 +154,11 @@ public class ProjectService {
         if (user == null) {
             return;
         }
-        if (!userProjectHistoryRepository.existsByProjectIdAndUser(projectId, user)) {
-            Project project = projectRepository.findById(projectId)
-                .orElseThrow(ProjectReadFailException::new);
-            UserProjectHistory history;
-            if (project.getStatus() == 'O') {
+        UserProjectHistory history;
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(ProjectReadFailException::new);
+        if (project.getStatus() == 'O') {
+            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'E')){
                 history = UserProjectHistory.builder()
                     .user(user)
                     .project(project)
@@ -168,19 +168,21 @@ public class ProjectService {
                     .type('E')
                     .build();
                 userProjectHistoryRepository.save(history);
-            } else if (project.getStatus() == 'D') {
+            }
+        } else if (project.getStatus() == 'D') {
+            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'V')){
                 history = UserProjectHistory.builder()
                     .user(user)
                     .project(project)
                     .expiredDatetime(project.getExpiredDatetime())
-                    .status(Status.DELIVERED)
+                    .status(Status.READY)
                     .isOwner(user.equals(project.getUser()))
                     .type('V')
                     .build();
                 userProjectHistoryRepository.save(history);
-            } else {
-                return;
             }
+        } else {
+            return;
         }
     }
 
@@ -237,12 +239,11 @@ public class ProjectService {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize,
             Sort.by("expiredDatetime").descending().and(Sort.by("status")));
         List<UserProjectHistory> userProjectHistoryList;
-        if (type.equals("D")) {
+        if (type.equals("V")) {
             totalSize = userProjectHistoryRepository.countByUserAndType(user, 'V');
             userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndType(user, 'V',
                 pageable);
         } else {
-
             totalSize = userProjectHistoryRepository.countByUserAndType(user, 'E');
             userProjectHistoryList = userProjectHistoryRepository.findAllByUserAndType(user, 'E',
                 pageable);

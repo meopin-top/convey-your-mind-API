@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserProjectHistoryRepository extends JpaRepository<UserProjectHistory, Long> {
 
-    boolean existsByProjectIdAndUser(Long ProjectId,User user);
+    boolean existsByProjectIdAndUserAndType(Long ProjectId,User user, char type);
 
     Optional<UserProjectHistory> findUserProjectHistoryByProjectIdAndUser(Long ProjectId,User user);
 

@@ -99,9 +99,7 @@ public class UserController {
     public ResponseEntity<CommonResponse> verifyEmail(@UserResolver User user, @RequestBody SignUpRequest request)
         throws MessagingException {
 
-        if(userService.isValidEmail(user, request.getEmail())){
-            emailService.sendSpareMail(request.getEmail(), user);
-        }
+        emailService.sendSpareMail(request.getEmail(), user);
         return ResponseHandler.generateResponse(ResponseCode.MAIL_SEND_SUCCESS, HttpStatus.OK,
             null);
     }

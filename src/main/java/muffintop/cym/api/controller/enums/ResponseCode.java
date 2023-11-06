@@ -54,6 +54,7 @@ public enum ResponseCode {
 
     PROJECT_INVITE_CODE_SUCCESS(3101, "초대코드가 생성되었습니다."),
     PROJECT_INVITE_CODE_EXISTED(3102, "초대코드가 존재합니다."),
+    INVALID_INVITE_CODE(3111, "초대코드가 유효하지않습니다."),
 
     PROJECT_SUBMIT_SUCCESS(3201, "프로젝트가 제출되었습니다."),
 

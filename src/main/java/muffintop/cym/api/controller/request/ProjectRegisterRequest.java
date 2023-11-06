@@ -7,5 +7,4 @@ public class ProjectRegisterRequest {
 
     private String code;
 
-
 }

@@ -11,6 +11,7 @@ import muffintop.cym.api.exception.IncorrectPasswordException;
 import muffintop.cym.api.exception.InvalidFormatEmailException;
 import muffintop.cym.api.exception.InvalidFormatIdException;
 import muffintop.cym.api.exception.InvalidFormatPasswordException;
+import muffintop.cym.api.exception.InvalidInviteCodeException;
 import muffintop.cym.api.exception.InvalidPasswordException;
 import muffintop.cym.api.exception.NoEmailException;
 import muffintop.cym.api.exception.NoFileException;
@@ -118,7 +119,12 @@ public class ResponseExceptionController {
 
     @ExceptionHandler(value = {NoEmailException.class})
     protected ResponseEntity<CommonResponse> handleNoEmailException() {
-        return ResponseHandler.generateResponse(ResponseCode.EXISTED_EMAIL, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.NO_EMAIL, HttpStatus.OK, null);
+    }
+
+    @ExceptionHandler(value = {InvalidInviteCodeException.class})
+    protected ResponseEntity<CommonResponse> handleInvalidInviteCodeException() {
+        return ResponseHandler.generateResponse(ResponseCode.INVALID_INVITE_CODE, HttpStatus.OK, null);
     }
 
     @ExceptionHandler(value = {Exception.class})

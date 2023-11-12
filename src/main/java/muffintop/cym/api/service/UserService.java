@@ -278,15 +278,16 @@ public class UserService {
     }
 
     @Transactional
-    public String findPassword(User user) {
-        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
-            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
-        if(basicUser.getEmail() == null) {
-            throw new NoEmailException();
-        }
+    public String findPassword(String email) {
+        User basicUser = userRepository.findUserByEmailAndAuthMethod(email,'E').orElseThrow(NoEmailException::new);
         String newPassword = makePassword();
         basicUser.setPassword(passwordEncoder.encode(newPassword));
         return newPassword;
+    }
+
+    public User findUserByEmail(String email) {
+        User basicUser = userRepository.findUserByEmailAndAuthMethod(email,'E').orElseThrow(NoEmailException::new);
+        return basicUser;
     }
 
     public boolean isValidEmail(User user, String email) {

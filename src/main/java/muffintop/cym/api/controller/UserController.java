@@ -84,12 +84,11 @@ public class UserController {
             userService.makeNickname());
     }
 
-    @Auth
     @PostMapping("/password")
-    public ResponseEntity<CommonResponse> findPassword(@UserResolver User user)
+    public ResponseEntity<CommonResponse> findPassword(@UserResolver User user, @RequestBody SignUpRequest request)
         throws MessagingException {
-        String newPassword = userService.findPassword(user);
-        emailService.sendPasswordMail(user.getEmail(), user, newPassword);
+        String password = userService.findPassword(request.getEmail());
+        emailService.sendPasswordMail(request.getEmail(), userService.findUserByEmail(request.getEmail()), password);
         return ResponseHandler.generateResponse(ResponseCode.MAIL_SEND_SUCCESS, HttpStatus.OK,
             null);
     }

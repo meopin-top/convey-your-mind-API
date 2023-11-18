@@ -237,14 +237,17 @@ public class UserService {
         basicUser.setNickName(nickName);
     }
 
-    private void updateProfile(User user, MultipartFile profile) {
-        String uuid = UUID.randomUUID().toString();
-        String url = fileService.makeUrl(uuid);
-        fileService.upload(profile, uuid);
+    private void updateProfile(User user, MultipartFile profile,String profileUri) {
         User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
             user.getAuthMethod()).orElseThrow(NonExistIdException::new);
-        basicUser.setProfile(url);
-
+        if(profile == null){
+            basicUser.setProfile(profileUri);
+        } else {
+            String uuid = UUID.randomUUID().toString();
+            String url = fileService.makeUrl(uuid);
+            fileService.upload(profile, uuid);
+            basicUser.setProfile(url);
+        }
     }
 
     @Transactional
@@ -258,8 +261,8 @@ public class UserService {
         if (request.getNickname() != null) {
             updateNickname(user, request.getNickname());
         }
-        if (profile != null) {
-            updateProfile(user, profile);
+        if (profile != null || request.getProfileUri() != null) {
+            updateProfile(user, profile, request.getProfileUri());
         }
     }
     public String makePassword() {

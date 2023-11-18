@@ -13,4 +13,6 @@ public class UserUpdateRequest {
 
     private String email;
 
+    private String profileUri;
+
 }

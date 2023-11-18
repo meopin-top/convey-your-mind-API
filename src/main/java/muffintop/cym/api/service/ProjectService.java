@@ -150,13 +150,19 @@ public class ProjectService {
             .orElseThrow(ProjectReadFailException::new);
     }
 
-    public void enterProject(Long projectId, User user) {
-        if (user == null) {
-            return;
-        }
-        UserProjectHistory history;
+    public String enterProject(Long projectId, User user) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(ProjectReadFailException::new);
+        if (user == null) {
+            if (project.getStatus() == 'O') {
+                return "E";
+            } else if (project.getStatus() == 'D') {
+                return "V";
+            } else {
+                return null;
+            }
+        }
+        UserProjectHistory history;
         if (project.getStatus() == 'O') {
             if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'E')){
                 history = UserProjectHistory.builder()
@@ -169,6 +175,7 @@ public class ProjectService {
                     .build();
                 userProjectHistoryRepository.save(history);
             }
+            return "E";
         } else if (project.getStatus() == 'D') {
             if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'V')){
                 history = UserProjectHistory.builder()
@@ -181,9 +188,9 @@ public class ProjectService {
                     .build();
                 userProjectHistoryRepository.save(history);
             }
-        } else {
-            return;
+            return "V";
         }
+        return null;
     }
 
     @Transactional
@@ -312,7 +319,7 @@ public class ProjectService {
         return null;
     }
 
-    public void registerProject(User user, String code) throws UnsupportedEncodingException {
+    public String registerProject(User user, String code) throws UnsupportedEncodingException {
         String inviteCode = findInviteCode(code);
         if (inviteCode == null) {
             throw new InvalidInviteCodeException();
@@ -320,7 +327,7 @@ public class ProjectService {
 
         Project project = getProjectByInviteCode(inviteCode);
 
-        enterProject(project.getId(), user);
+        return enterProject(project.getId(), user);
     }
 
 

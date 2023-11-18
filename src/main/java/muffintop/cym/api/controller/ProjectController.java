@@ -11,6 +11,7 @@ import muffintop.cym.api.controller.request.ProjectContentRequest;
 import muffintop.cym.api.controller.request.ProjectRegisterRequest;
 import muffintop.cym.api.controller.request.ProjectRequest;
 import muffintop.cym.api.controller.response.CommonResponse;
+import muffintop.cym.api.controller.response.StatusResponse;
 import muffintop.cym.api.domain.User;
 import muffintop.cym.api.exception.ExistingInviteCodeException;
 import muffintop.cym.api.interceptor.Auth;
@@ -111,8 +112,7 @@ public class ProjectController {
     @PostMapping("/register")
     public ResponseEntity<CommonResponse> registerProject(@UserResolver User user, @RequestBody ProjectRegisterRequest request)
         throws UnsupportedEncodingException {
-        projectService.registerProject(user, request.getCode());
-        return ResponseHandler.generateResponse(ResponseCode.PROJECT_REGISTER_SUCCESS, HttpStatus.OK, null);
+        return ResponseHandler.generateResponse(ResponseCode.PROJECT_REGISTER_SUCCESS, HttpStatus.OK, new StatusResponse(projectService.registerProject(user, request.getCode())));
 
     }
 }

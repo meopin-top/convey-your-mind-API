@@ -94,6 +94,17 @@ public class UserController {
     }
 
     @Auth
+    @PostMapping("/password/verify")
+    public ResponseEntity<CommonResponse> verifyPassword(@UserResolver User user, @RequestBody SignUpRequest request) {
+        if(userService.isSamePassword(request.getPassword(), user)){
+            return ResponseHandler.generateResponse(ResponseCode.PASSWORD_CHECK_SUCCESS, HttpStatus.OK,
+                true);
+        }
+        return ResponseHandler.generateResponse(ResponseCode.INCORRECT_PASSWORD, HttpStatus.OK,
+            false);
+    }
+
+    @Auth
     @PostMapping("/email/verify")
     public ResponseEntity<CommonResponse> verifyEmail(@UserResolver User user, @RequestBody SignUpRequest request)
         throws MessagingException {

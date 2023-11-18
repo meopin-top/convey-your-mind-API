@@ -27,6 +27,8 @@ public enum ResponseCode {
     //로그아웃
     LOGOUT_SUCCESS(1201, "로그아웃이 완료되었습니다."),
 
+    //패스워드
+    PASSWORD_CHECK_SUCCESS(1301, "패스워드가 일치합니다."),
 
     //유저정보 갱신
     USER_UPDATE_SUCCESS(1301, "변경이 완료되었습니다."),

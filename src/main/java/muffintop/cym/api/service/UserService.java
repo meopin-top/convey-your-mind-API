@@ -299,4 +299,13 @@ public class UserService {
         }
         return true;
     }
+
+    public boolean isSamePassword(String password, User user) {
+        if(passwordEncoder.matches(password, user.getPassword())){
+            return true;
+        }
+        return false;
+    }
+
+
 }

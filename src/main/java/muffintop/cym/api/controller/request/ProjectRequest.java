@@ -1,7 +1,6 @@
 package muffintop.cym.api.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 

@@ -78,7 +78,8 @@ public class EmailService {
     }
 
     @Async
-    public void sendPasswordMail(String email, User user, String password) throws MessagingException {
+    public void sendPasswordMail(String email, User user, String password)
+        throws MessagingException {
         Context context = new Context();
 
         MagicLink magicLink = MagicLink.builder()
@@ -118,7 +119,6 @@ public class EmailService {
 
         magicLinkRepository.save(magicLink);
         context.setVariable("userId", user.getId());
-
 
         String message = templateEngine.process("spare-email.html", context);
 

@@ -21,7 +21,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     public static final String USER_KEY = "user";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler) {
 
         if (!(handler instanceof HandlerMethod)) {
             return true;
@@ -40,8 +41,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         //로그인이 필요없는 컨트롤러면 통과
         if (auth == null) {
             return true;
-        }else{
-            if (user == null){
+        } else {
+            if (user == null) {
                 throw new UnAuthorizedException();
             }
         }

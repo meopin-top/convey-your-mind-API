@@ -17,14 +17,12 @@ import muffintop.cym.api.service.EmailService;
 import muffintop.cym.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,7 +58,8 @@ public class UserController {
     @Auth
     @GetMapping()
     public ResponseEntity<CommonResponse> getUserInfo(@UserResolver User user) {
-        return ResponseHandler.generateResponse(ResponseCode.SIGN_IN_SUCCESS, HttpStatus.OK, user);
+        return ResponseHandler.generateResponse(ResponseCode.USER_INFO_SUCCESS, HttpStatus.OK,
+            user);
     }
 
     @DeleteMapping("/logout")
@@ -80,24 +79,29 @@ public class UserController {
 
     @GetMapping("/nickname/random")
     public ResponseEntity<CommonResponse> getNickname() {
-        return ResponseHandler.generateResponse(ResponseCode.NICkNAME_GENERATE_SUCCESS, HttpStatus.OK,
+        return ResponseHandler.generateResponse(ResponseCode.NICkNAME_GENERATE_SUCCESS,
+            HttpStatus.OK,
             userService.makeNickname());
     }
 
     @PostMapping("/password")
-    public ResponseEntity<CommonResponse> findPassword(@UserResolver User user, @RequestBody SignUpRequest request)
+    public ResponseEntity<CommonResponse> findPassword(@UserResolver User user,
+        @RequestBody SignUpRequest request)
         throws MessagingException {
         String password = userService.findPassword(request.getEmail());
-        emailService.sendPasswordMail(request.getEmail(), userService.findUserByEmail(request.getEmail()), password);
+        emailService.sendPasswordMail(request.getEmail(),
+            userService.findUserByEmail(request.getEmail()), password);
         return ResponseHandler.generateResponse(ResponseCode.MAIL_SEND_SUCCESS, HttpStatus.OK,
             null);
     }
 
     @Auth
     @PostMapping("/password/verify")
-    public ResponseEntity<CommonResponse> verifyPassword(@UserResolver User user, @RequestBody SignUpRequest request) {
-        if(userService.isSamePassword(request.getPassword(), user)){
-            return ResponseHandler.generateResponse(ResponseCode.PASSWORD_CHECK_SUCCESS, HttpStatus.OK,
+    public ResponseEntity<CommonResponse> verifyPassword(@UserResolver User user,
+        @RequestBody SignUpRequest request) {
+        if (userService.isSamePassword(request.getPassword(), user)) {
+            return ResponseHandler.generateResponse(ResponseCode.PASSWORD_CHECK_SUCCESS,
+                HttpStatus.OK,
                 true);
         }
         return ResponseHandler.generateResponse(ResponseCode.INCORRECT_PASSWORD, HttpStatus.OK,
@@ -106,7 +110,8 @@ public class UserController {
 
     @Auth
     @PostMapping("/email/verify")
-    public ResponseEntity<CommonResponse> verifyEmail(@UserResolver User user, @RequestBody SignUpRequest request)
+    public ResponseEntity<CommonResponse> verifyEmail(@UserResolver User user,
+        @RequestBody SignUpRequest request)
         throws MessagingException {
 
         emailService.sendSpareMail(request.getEmail(), user);

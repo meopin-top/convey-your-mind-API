@@ -32,7 +32,6 @@ import muffintop.cym.api.repository.ProjectContentRepository;
 import muffintop.cym.api.repository.ProjectRepository;
 import muffintop.cym.api.repository.UserProjectHistoryRepository;
 import muffintop.cym.api.utils.RedisUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -164,7 +163,8 @@ public class ProjectService {
         }
         UserProjectHistory history;
         if (project.getStatus() == 'O') {
-            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'E')){
+            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user,
+                'E')) {
                 history = UserProjectHistory.builder()
                     .user(user)
                     .project(project)
@@ -177,7 +177,8 @@ public class ProjectService {
             }
             return "E";
         } else if (project.getStatus() == 'D') {
-            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user, 'V')){
+            if (!userProjectHistoryRepository.existsByProjectIdAndUserAndType(projectId, user,
+                'V')) {
                 history = UserProjectHistory.builder()
                     .user(user)
                     .project(project)

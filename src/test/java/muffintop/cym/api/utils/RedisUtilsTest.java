@@ -1,6 +1,6 @@
 package muffintop.cym.api.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,11 +15,13 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("local")
 class RedisUtilsTest {
+
     @Autowired
     private RedisUtils redisUtils;
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @Test
     @DisplayName("레디스 테스트")
     void setData() throws JsonProcessingException {
@@ -30,14 +32,14 @@ class RedisUtilsTest {
             .contents(new ArrayList<>())
             .build();
 
-        redisUtils.setData(key.toString(),objectMapper.writeValueAsString(value));
+        redisUtils.setData(key.toString(), objectMapper.writeValueAsString(value));
 
     }
 
     @Test
     @DisplayName("레디스 테스트2")
     void getData() {
-        String key ="test";
+        String key = "test";
         String value = "test value";
         String result = redisUtils.getData(key);
         assertTrue(value.equals(result));
@@ -47,7 +49,7 @@ class RedisUtilsTest {
     @Test
     @DisplayName("레디스 테스트3")
     void deleteData() {
-        String key ="test";
+        String key = "test";
         redisUtils.deleteData(key);
 
     }

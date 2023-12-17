@@ -34,6 +34,7 @@ public enum ResponseCode {
     USER_UPDATE_SUCCESS(1301, "변경이 완료되었습니다."),
     NICkNAME_GENERATE_SUCCESS(1302, "닉네임이 생성되었습니다."),
     MAIL_SEND_SUCCESS(1303, "메일이 전송되었습니다."),
+    USER_INFO_SUCCESS(1304, "유저 조회 성공하였습니다."),
     NO_EMAIL(1311, "이메일이 존재하지 않습니다."),
 
     // 파일
@@ -61,7 +62,7 @@ public enum ResponseCode {
     PROJECT_SUBMIT_SUCCESS(3201, "프로젝트가 제출되었습니다."),
 
     // 프로젝트 컨텐츠
-    PROJECT_CONTENT_CREATE_SUCCESS(4001,"컨텐츠가 정상 생성되었습니다.");
+    PROJECT_CONTENT_CREATE_SUCCESS(4001, "컨텐츠가 정상 생성되었습니다.");
     private int code;
     private String message;
 

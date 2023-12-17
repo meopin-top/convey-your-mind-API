@@ -1,7 +1,5 @@
 package muffintop.cym.api.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;

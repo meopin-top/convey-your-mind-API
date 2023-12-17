@@ -237,10 +237,10 @@ public class UserService {
         basicUser.setNickName(nickName);
     }
 
-    private void updateProfile(User user, MultipartFile profile,String profileUri) {
+    private void updateProfile(User user, MultipartFile profile, String profileUri) {
         User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
             user.getAuthMethod()).orElseThrow(NonExistIdException::new);
-        if(profile == null){
+        if (profile == null) {
             basicUser.setProfile(profileUri);
         } else {
             String uuid = UUID.randomUUID().toString();
@@ -265,6 +265,7 @@ public class UserService {
             updateProfile(user, profile, request.getProfileUri());
         }
     }
+
     public String makePassword() {
         int leftLimit = 48; // 0
         int rightLimit = 122; // z
@@ -282,14 +283,16 @@ public class UserService {
 
     @Transactional
     public String findPassword(String email) {
-        User basicUser = userRepository.findUserByEmailAndAuthMethod(email,'E').orElseThrow(NoEmailException::new);
+        User basicUser = userRepository.findUserByEmailAndAuthMethod(email, 'E')
+            .orElseThrow(NoEmailException::new);
         String newPassword = makePassword();
         basicUser.setPassword(passwordEncoder.encode(newPassword));
         return newPassword;
     }
 
     public User findUserByEmail(String email) {
-        User basicUser = userRepository.findUserByEmailAndAuthMethod(email,'E').orElseThrow(NoEmailException::new);
+        User basicUser = userRepository.findUserByEmailAndAuthMethod(email, 'E')
+            .orElseThrow(NoEmailException::new);
         return basicUser;
     }
 
@@ -301,7 +304,7 @@ public class UserService {
     }
 
     public boolean isSamePassword(String password, User user) {
-        if(passwordEncoder.matches(password, user.getPassword())){
+        if (passwordEncoder.matches(password, user.getPassword())) {
             return true;
         }
         return false;

@@ -216,54 +216,49 @@ public class UserService {
     }
 
     private void updatePassword(User user, String password) {
-        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
-            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
-        basicUser.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
     }
 
     private void updateEmail(User user, String email) {
         // TO DO :이메일 전송 추가 필요
-        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
-            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
         if (userRepository.existsByEmailAndAuthMethod(email, user.getAuthMethod())) {
             throw new ExistingEmailCodeException();
         }
-        basicUser.setEmail(email);
+        user.setEmail(email);
     }
 
     private void updateNickname(User user, String nickName) {
-        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
-            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
-        basicUser.setNickName(nickName);
+        user.setNickName(nickName);
     }
 
     private void updateProfile(User user, MultipartFile profile, String profileUri) {
-        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
-            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
         if (profile == null) {
-            basicUser.setProfile(profileUri);
+            user.setProfile(profileUri);
         } else {
             String uuid = UUID.randomUUID().toString();
             String url = fileService.makeUrl(uuid);
             fileService.upload(profile, uuid);
-            basicUser.setProfile(url);
+            user.setProfile(url);
         }
     }
 
     @Transactional
-    public void updateUser(User user, UserUpdateRequest request, MultipartFile profile) {
+    public User updateUser(User user, UserUpdateRequest request, MultipartFile profile) {
+        User basicUser = userRepository.findUserByIdAndAuthMethod(user.getId(),
+            user.getAuthMethod()).orElseThrow(NonExistIdException::new);
         if (request.getEmail() != null) {
-            updateEmail(user, request.getEmail());
+            updateEmail(basicUser, request.getEmail());
         }
         if (request.getPassword() != null) {
-            updatePassword(user, request.getPassword());
+            updatePassword(basicUser, request.getPassword());
         }
         if (request.getNickname() != null) {
-            updateNickname(user, request.getNickname());
+            updateNickname(basicUser, request.getNickname());
         }
         if (profile != null || request.getProfileUri() != null) {
-            updateProfile(user, profile, request.getProfileUri());
+            updateProfile(basicUser, profile, request.getProfileUri());
         }
+        return basicUser;
     }
 
     public String makePassword() {

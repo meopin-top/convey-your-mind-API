@@ -72,9 +72,8 @@ public class UserController {
     @PutMapping()
     public ResponseEntity<CommonResponse> update(@UserResolver User user, UserUpdateRequest request,
         MultipartFile profile) {
-        userService.updateUser(user, request, profile);
         return ResponseHandler.generateResponse(ResponseCode.USER_UPDATE_SUCCESS, HttpStatus.OK,
-            null);
+            userService.updateUser(user, request, profile));
     }
 
     @GetMapping("/nickname/random")
